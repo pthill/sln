@@ -1,0 +1,272 @@
+/*css 初始化 */
+
+html,
+body,
+ul,
+li,
+ol,
+dl,
+dd,
+dt,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+form,
+fieldset,
+legend,
+img,
+input,
+div {
+    margin: 0;
+    padding: 0;
+    /*清除元素的内外边距*/
+    box-sizing: border-box;
+}
+
+fieldset,
+img,
+input,
+button {
+    padding: 0;
+    margin: 0;
+    outline-style: none;
+    /*外面环绕线*/
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+li {
+    list-style: none;
+}
+
+
+/*去掉原样式中的小黑点*/
+
+img {
+    vertical-align: top;
+    border: 0;
+}
+
+table {
+    border-collapse: collapse;
+    /*合并外连线*/
+}
+
+body {
+    /*line-height: 1.333;*/
+    font-size: 14px;
+    font-family: "Microsoft Yahei";
+}
+
+.clearfix {
+    zoom: 1;
+    *zoom: 1;
+}
+
+.clearfix:after {
+    content: ".";
+    display: block;
+    font-size: 0;
+    height: 0;
+    clear: both;
+    visibility: hidden
+}
+
+a {
+    color: #333;
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 100%;
+    font-family: "微软雅黑", "Microsoft Yahei", Verdana, Arial, Helvetica, sans-serif, SimSun;
+}
+
+s,
+i,
+em {
+    font-style: normal;
+    text-decoration: none;
+}
+
+li {
+    list-style: none
+}
+
+a:link,
+a:visited {
+    text-decoration: none
+}
+
+.w {
+    /*版心 提取 */
+    width: 1190px;
+    margin: 0 auto;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.block {
+    display: block;
+}
+
+.bgc {
+    background-color: #f2f2f2;
+}
+
+.noborder_bot {
+    border-bottom: 0!important;
+}
+
+.col_666 {
+    color: #666;
+}
+
+.no_pad_l {
+    padding-left: 0;
+}
+
+.no_pad_r {
+    padding-right: 0;
+}
+
+.w100 {
+    width: 100%;
+}
+
+.container {
+    width: 1210px;
+    margin: 0 auto;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.col-md-1,
+.col-md-10,
+.col-md-11,
+.col-md-12,
+.col-md-2,
+.col-md-3,
+.col-md-4,
+.col-md-5,
+.col-md-6,
+.col-md-7,
+.col-md-8,
+.col-md-9 {
+    float: left
+}
+
+.col-md-12 {
+    width: 100%
+}
+
+.col-md-11 {
+    width: 91.66666667%
+}
+
+.col-md-10 {
+    width: 83.33333333%
+}
+
+.col-md-9 {
+    width: 75%
+}
+
+.col-md-8 {
+    width: 66.66666667%
+}
+
+.col-md-7 {
+    width: 58.33333333%
+}
+
+.col-md-6 {
+    width: 50%
+}
+
+.col-md-5 {
+    width: 41.66666667%
+}
+
+.col-md-4 {
+    width: 33.33333333%
+}
+
+.col-md-3 {
+    width: 25%
+}
+
+.col-md-2 {
+    width: 16.66666667%
+}
+
+.col-md-1 {
+    width: 8.33333333%
+}
+/*分页*/
+.pagination-container{
+  padding: 15px 20px;
+  text-align:center;
+}  
+.pagination-container a{
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px; 
+  line-height: 30px; 
+  margin: 0 5px;
+  border-radius: 50%;
+}  
+.pagination-container a:hover{
+  color: #fff;
+  text-decoration: none;
+  background-color: #ed6f05; 
+}
+.pagination-container a.nextPage,.pagination-container a.prevPage{
+  width: 80px;
+  border-radius: 20px;
+}
+.pagination-container span{
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 5px;
+}  
+.pagination-container span.current{
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 5px;
+  color: #fff;
+  background-color: #ed6f05; 
+  border-radius: 50%;
+}  
+.pagination-container span.disabled{ 
+  display: inline-block;
+  vertical-align: middle;
+  width: 80px;
+  margin: 0 5px;
+  border-radius: 20px;
+}  

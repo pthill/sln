@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.portal.PortalIndexBannerReadDao">
+	<resultMap id="IndexBannerResult" type="com.sln.entity.portal.IndexBanner">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="order" column="order" />
+		<result property="abbreviation" column="abbreviation" />
+		<result property="type" column="type" />
+		<result property="url" column="url" />
+		<result property="img" column="img" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="state" column="state" />
+		<result property="parkId" column="park_id"/>
+		<result property="parkName" column="parkName"/>
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+
+	<select id="get" parameterType="java.lang.Integer" resultMap="IndexBannerResult">
+		select
+		*
+		from index_banner
+		where `id` = #{id}
+	</select>
+
+	<select id="getPage" parameterType="java.lang.Integer" resultMap="IndexBannerResult">
+		SELECT
+		b.id,
+		b.`name`,
+		b.`order`,
+		b.abbreviation,
+		b.state,
+		b.type,
+		b.url,
+		b.img,
+		b.park_id,
+		b.start_time,
+		b.end_time,
+		b.create_time,
+		b.update_time,
+		p.park_name as parkName
+        FROM
+		index_banner b
+		LEFT join park p on p.id=b.park_id
+		<include refid="getCondition"/>
+		order by b.park_id desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getPageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1)
+		from `index_banner` b
+		<include refid="getCondition"/>
+	</select>
+
+	<select id="getBannerList" resultMap="IndexBannerResult" >
+		SELECT
+		b.id,
+		b.img,
+		b.`name`,
+		b.`order`,
+		b.abbreviation,
+		b.state,
+		b.type,
+		b.url,
+		b.start_time,
+		b.end_time,
+		b.create_time,
+		b.update_time
+        FROM
+		index_banner b
+		where b.park_id=#{parkId} and now() BETWEEN b.start_time and b.end_time
+		and b.state=1 AND b.type=#{type} order by b.start_time asc,b.order asc
+	</select>
+
+	<sql id="getCondition">
+		<where>
+			<if test="queryMap.q_bannername != null and queryMap.q_bannername !=''">
+				and b.name like CONCAT('%',#{queryMap.q_bannername},'%')
+			</if>
+			<if test="queryMap.q_bannerState != null and queryMap.q_bannerState !=''">
+				and b.state = #{queryMap.q_bannerState}
+			</if>
+			<if test="queryMap.q_bannertype != null and queryMap.q_bannertype !=''">
+				and b.type = #{queryMap.q_bannertype}
+			</if>
+		</where>
+	</sql>
+
+	<select id="isNameExist"  resultType="java.lang.Integer">
+		select count(1)
+		from `index_banner`
+		where `name` = #{name}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+		<if test="parkId != null">
+			and park_id = #{parkId}
+		</if>
+	</select>
+
+	<select id="isOrderExist"  resultType="java.lang.Integer">
+		select count(1)
+		from `index_banner`
+		where `order` = #{order} and `park_id` =#{parkId}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+		<if test="type != null">
+			and type = #{type}
+		</if>
+	</select>
+
+	<select id="isAbbreviationExist"  resultType="java.lang.Integer">
+		select count(1)
+		from `index_banner`
+		where `abbreviation` = #{abbreviation}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+		<if test="parkId != null">
+			and park_id = #{parkId}
+		</if>
+	</select>
+</mapper>

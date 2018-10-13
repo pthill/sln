@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.seller.SellerEliminateReadDao">
+	<resultMap id="SellerEliminateResult" type="com.sln.entity.seller.SellerEliminate">
+			<result property="id" column="id" />
+			<result property="kindType" column="kind_type" />
+			<result property="tipValue" column="tip_value" />
+			<result property="warnValue" column="warn_value" />
+			<result property="eliminateValue" column="eliminate_value" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<select id="get" parameterType="java.lang.Integer" resultMap="SellerEliminateResult">
+		select
+		   *
+		from `seller_eliminate`
+		where `id` = #{id}
+	</select>
+	
+<!--getByKindTypeAndItems  -->
+   <select id="getByKindTypeAndItems" resultType="java.lang.Integer" parameterType="java.util.Map">
+   select id 
+	   from seller_eliminate
+	   where kind_type=#{modelmap.kindType} and Items=#{modelmap.Items}
+   </select>
+   <!-- getcount -->
+   <select id="getcount" resultType="java.lang.Integer">
+   select count(1) from seller_eliminate
+   </select>
+   <!-- getSellerEliminate -->
+   <select id="getSellerEliminate" resultType="com.sln.entity.seller.SellerEliminate">
+   select
+        kind_type, tip_value,warn_value,eliminate_value
+    from 
+        seller_eliminate
+   </select>
+</mapper>

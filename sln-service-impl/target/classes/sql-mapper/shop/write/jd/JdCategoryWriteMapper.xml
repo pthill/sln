@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.jd.JdCategoryWriteDao">
+	<resultMap id="JdCategoryResult" type="com.sln.entity.jd.JdCategory">
+			<result property="id" column="id" />
+			<result property="catId" column="catId" />
+			<result property="parentId" column="parentId" />
+			<result property="name" column="name" />
+			<result property="catClass" column="catClass" />
+			<result property="state" column="state" />
+	</resultMap>
+		
+	<!-- 批量新增分类 -->
+	<insert id="batchInsertCategory" parameterType="java.util.List">
+		insert into jd_category(catId,parentId,name,catClass,state) values
+		<foreach collection="list" index="index" item="item" separator=",">
+				(
+				#{item.catId},
+				#{item.parentId},
+				#{item.name},
+				#{item.catClass},
+				#{item.state}
+				)
+       </foreach> 
+	</insert>
+</mapper>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.supplier.SupplierReturnReadDao">
+	<resultMap id="SupplierReturnResult" type="com.sln.entity.supplier.SupplierReturn">
+			<result property="id" column="id" />
+			<result property="returnSn" column="return_sn" />
+			<result property="orderSn" column="order_sn" />
+			<result property="sellerId" column="seller_id" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="returnState" column="return_state" />
+			<result property="supplierId" column="supplier_id" />
+			<result property="supplierType" column="supplier_type" />
+			<result property="memberId" column="member_id" />
+			<result property="memberName" column="member_name" />
+			<result property="backId" column="back_id" />
+			<result property="productName" column="product_name" />
+			<result property="number" column="number" />
+	</resultMap>
+	<sql id="whereConditions">
+		where 1 = 1 
+			<if test="queryMap.q_orderSn != null and queryMap.q_orderSn != ''">
+				and t.order_sn = #{queryMap.q_orderSn}
+			</if>
+			<if test="queryMap.q_returnState != null and queryMap.q_returnState !=''">
+				and t.return_state = #{queryMap.q_returnState}
+			</if>
+			<if test="queryMap.sellerId != null and queryMap.sellerId != 0">
+				and t.seller_id = #{queryMap.sellerId}
+			</if>
+			<if test="queryMap.supplierId != null and queryMap.supplierId != 0">
+				and t.supplier_id = #{queryMap.supplierId}
+			</if>
+	</sql>
+	<select id="getPage" resultMap="SupplierReturnResult">
+		select t.id,t.return_sn,t.order_sn,t.seller_id,t.create_time,t.update_time
+			,t.return_state,t.supplier_id,t.member_id,t.member_name,t.back_id,t_p.name1 product_name,t_mpb.number
+		 from supplier_return t left join member_product_back t_mpb on t.back_id = t_mpb.id
+		 left join product t_p on t_mpb.product_id = t_p.id
+		<include refid="whereConditions"/>
+		order by t.create_time desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<select id="getPageCount" resultType="java.lang.Integer">
+		select count(0) from supplier_return t
+		<include refid="whereConditions"/>
+	</select>
+	<!-- 根据退货申请单id查询退货单信息和供应商信息 -->
+	<select id="getSupplierReturnByBckId" resultMap="SupplierReturnResult">
+		select t.id,t.return_sn,t.order_sn,t.seller_id,t.create_time,t.update_time
+			,t.return_state,t.supplier_id,t.member_id,t.member_name,t.back_id,t_s.supplier_type
+		 from supplier_return t left join supplier t_s on t.supplier_id = t_s.id
+		 where 1= 1
+		 <if test="queryMap.backId != null">
+		 	and t.back_id = #{queryMap.backId}
+		 </if>
+	</select>
+	<!-- 根据订单id查询需要插入的退货单信息 -->
+	<select id="getSupplierReturnByOrderId" resultMap="SupplierReturnResult">
+		select a.orders_sn as order_sn,a.seller_id,a.supplier_id,t_s.member_id,t_s.member_name from 
+			(select t.orders_sn,t_p.supplier_id,t.seller_id from orders_product t left join product t_p on t.product_id = t_p.id
+			where t.orders_id =#{orderId}
+		group by orders_sn,supplier_id,seller_id) a left join orders t_s on a.orders_sn = t_s.order_sn
+	
+	</select>
+</mapper>

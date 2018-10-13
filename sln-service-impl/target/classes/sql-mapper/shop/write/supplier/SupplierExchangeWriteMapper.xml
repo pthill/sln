@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.supplier.SupplierExchangeWriteDao">
+	<resultMap id="SupplierExchangeResult" type="com.sln.entity.supplier.SupplierExchange">
+			<result property="id" column="id" />
+			<result property="exchangeSn" column="exchange_sn" />
+			<result property="orderSn" column="order_sn" />
+			<result property="productName" column="product_name" />
+			<result property="productId" column="product_id" />
+			<result property="memberName" column="member_name" />
+			<result property="memberId" column="member_id" />
+			<result property="remark" column="remark" />
+			<result property="exchangeNumber" column="exchange_number" />
+			<result property="exchangeState" column="exchange_state" />
+			<result property="createTime" column="create_time" />
+			<result property="receiptTime" column="receipt_time" />
+			<result property="deliverTime" column="deliver_time" />
+			<result property="returnTime" column="return_time" />
+	</resultMap>
+	
+	<update id="updateStateById" parameterType="com.sln.entity.supplier.SupplierExchange">
+        update `supplier_exchange` 
+    	<set>
+			<if test="exchangeState != null">`exchange_state`= #{exchangeState},</if>
+			<if test="exchangeState != null and exchangeState == 2">
+				receipt_time = now()
+			</if>
+			<if test="exchangeState != null and exchangeState == 3">
+				deliver_time = now()
+			</if>
+			<if test="exchangeState != null and exchangeState == 4">
+				return_time = now()
+			</if>
+	    </set>
+	    <if test="exchangeId != null and exchangeId !=0 ">
+	    	where exchange_id=#{exchangeId}
+	    </if>
+	    <if test="id != null and id != 0">
+	    	 where `id` = #{id}
+	    </if>
+	</update>
+	
+	<insert id="insertSupplierExchange" parameterType="com.sln.entity.supplier.SupplierExchange" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`supplier_exchange`
+		(
+			
+			`exchange_sn`,
+			`order_sn`,
+			`product_name`,
+			`product_id`,
+			`member_name`,
+			`member_id`,
+			`remark`,
+			`exchange_number`,
+			`exchange_state`,
+			`create_time`,
+			 exchange_id,
+			 supplier_id
+		)
+		values
+		(
+			
+			#{exchangeSn},
+			#{orderSn},
+			#{productName},
+			#{productId},
+			#{memberName},
+			#{memberId},
+			#{remark},
+			#{exchangeNumber},
+			#{exchangeState},
+			now(),
+			#{exchangeId},
+			#{supplierId}
+		)
+	</insert>
+	
+</mapper>

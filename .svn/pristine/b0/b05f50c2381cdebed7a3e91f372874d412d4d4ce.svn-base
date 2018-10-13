@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.operate.ParkWriteDao">
+	<resultMap id="ParkResult" type="com.sln.entity.operate.Park">
+			<result property="id" column="id" />
+			<result property="parkCode" column="park_code" />
+			<result property="parkName" column="park_name" />
+			<result property="parkAddr" column="park_addr" />
+			<result property="longitude" column="longitude" />
+			<result property="latitude" column="latitude" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="remark" column="remark" />
+		    <result property="img" column="img"/>
+		    <result property="tel" column="tel"/>
+		    <result property="area" column="area" />
+		    <result property="province" column="province"/>
+		    <result property="city" column="city" />
+		    <result property="serviceTime" column="serviceTime"/>
+	</resultMap>
+	
+	<update id="updateParkById" parameterType="com.sln.entity.operate.Park">
+        update `park` 
+    	<set>
+			<if test="longitude != null">`longitude`= #{longitude},</if>
+			<if test="latitude != null">`latitude`= #{latitude},</if>
+			<if test="parkName != null"> `park_name`= #{parkName},</if>
+			<if test="parkAddr != null"> `park_addr`= #{parkAddr},</if>
+			<if test="parkCode != null"> `park_code`= #{parkCode},</if>
+			<if test="state != null">state = #{state},</if>
+			<if test="remark != null">`remark`= #{remark},</if>
+			<if test="img != null">`img`= #{img},</if>
+			<if test="area !=null">`area`= #{area},</if>
+			<if test="city !=null">`city`= #{city},</if>
+			<if test="tel != null">`tel`= #{tel},</if>
+			<if test="province != null">`province`= #{province},</if>
+			<if test="serviceTime != null">`service_time`= #{serviceTime},</if>
+			update_time=now()
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insertPark" parameterType="com.sln.entity.operate.Park" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`park`
+		(
+			`park_code`,
+			`park_name`,
+			`park_addr`,
+			`create_time`,
+			`update_time`,
+			`remark`,
+			`state`,
+			`img`,
+			`tel`,
+			`province`,
+			`service_time`,
+			`area`,
+			`city`
+		)
+		values
+		(
+			#{parkCode},
+			#{parkName},
+			#{parkAddr},
+			now(),
+			now(),
+			#{remark},
+			1,
+			#{img},
+			#{tel},
+			#{province},
+			#{serviceTime},
+			#{area},
+			#{city}
+		)
+	</insert>
+	
+</mapper>

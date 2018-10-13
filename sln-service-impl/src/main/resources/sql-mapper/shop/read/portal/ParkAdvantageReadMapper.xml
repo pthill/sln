@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.portal.ParkAdvantageReadDao">
+	<resultMap id="ParkAdvantageResult" type="com.sln.entity.portal.ParkAdvantage">
+		<result property="id" column="id" />
+		<result property="order" column="order" />
+		<result property="parkId" column="park_id" />
+		<result property="title" column="title" />
+		<result property="state" column="state" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+		<result property="parkName" column="parkName" />
+	</resultMap>
+
+	<select id="get" parameterType="Integer" resultMap="ParkAdvantageResult">
+		select
+		*
+		from `park_advantage`
+		where `id` = #{id}
+	</select>
+
+	<select id="getPage"  resultMap="ParkAdvantageResult">
+		SELECT a.*, p.park_name as parkName from park_advantage a
+		left join park p on p.id=a.park_id
+		<include refid="getCondition"/>
+		order by a.order desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getPageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1)
+		from `park_advantage` a
+		<include refid="getCondition"/>
+	</select>
+
+	<sql id="getCondition">
+		<where>
+			<if test="queryMap.q_title != null and queryMap.q_title !=''">
+				and a.title like CONCAT('%',#{queryMap.q_title},'%')
+			</if>
+		</where>
+	</sql>
+
+	<select id="isTitleExist"  resultType="java.lang.Integer">
+		select count(1)
+		from `park_advantage`
+		where `title` = #{title}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+	</select>
+
+	<select id="isOrderExist"  resultType="java.lang.Integer">
+		select count(1)
+		from `park_advantage`
+		where `order` = #{order}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+	</select>
+
+	<select id="getByParkId" resultMap="ParkAdvantageResult">
+		SELECT p.* from `park_advantage` p where p.park_id=#{parkId}
+		and p.state='1' ORDER by p.order;
+	</select>
+</mapper>

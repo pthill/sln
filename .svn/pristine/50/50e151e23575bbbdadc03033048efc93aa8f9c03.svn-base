@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.portal.QuickEnterReadDao">
+    <resultMap id="QuickEnterResult" type="com.sln.entity.portal.QuickEnter">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="order" column="order" />
+        <result property="url" column="url" />
+        <result property="state" column="state"/>
+        <result property="parkId" column="park_id"/>
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="serviceName" column="serviceName"/>
+    </resultMap>
+
+    <select id="get" parameterType="Integer" resultMap="QuickEnterResult">
+        select
+        *
+        from `quick_enter`
+        where `id` = #{id}
+    </select>
+
+
+    <select id="getPage"  resultMap="QuickEnterResult">
+        SELECT a.*, p.service_name as serviceName from quick_enter a
+        left join portal_service p on p.id=a.url
+        <include refid="getCondition"/>
+        order by a.id desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+
+    <select id="getPageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1)
+        from `quick_enter` a
+        <include refid="getCondition"/>
+    </select>
+
+    <sql id="getCondition">
+        <where>
+            <if test="queryMap.q_enterName != null and queryMap.q_enterName !=''">
+                and a.name like CONCAT('%',#{queryMap.q_enterName},'%')
+            </if>
+            <if test="queryMap.q_enterState != null and queryMap.q_enterState !=''">
+                and a.state = #{queryMap.q_enterState}
+            </if>
+            <if test="queryMap.q_parkId != null and queryMap.q_parkId !=''">
+                and a.park_id = #{queryMap.q_parkId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="isNameExist"  resultType="java.lang.Integer">
+        select count(1)
+        from `quick_enter`
+        where `name` = #{name}
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+    <select id="isOrderExist"  resultType="java.lang.Integer">
+        select count(1)
+        from `quick_enter`
+        where `order` = #{order}
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+</mapper>

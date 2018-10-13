@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.member.MemberWelfareSendDetailWriteDao">
+    <resultMap id="MemberWelfareSendDetailResult" type="com.sln.entity.member.MemberWelfareSendDetail">
+        <result property="id" column="id" />
+        <result property="welfareId" column="welfare_id" />
+        <result property="staffNo" column="staff_no" />
+        <result property="name" column="name" />
+        <result property="tel" column="tel" />
+        <result property="money" column="money" />
+        <result property="birthday" column="birthday" />
+        <result property="startTime" column="start_time" />
+        <result property="endTime" column="end_time" />
+		<result property="sellerName" column="seller_name" />
+    </resultMap>
+
+    <insert id="insert" parameterType="com.sln.entity.member.MemberWelfareSendDetail" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into
+		`member_welfare_send_detail`
+		(
+
+		`welfare_id`,
+		`staff_no`,
+		`name`,
+		`tel`,
+		`money`,
+		`birthday`,
+		`start_time`,
+		`end_time`,
+		`seller_name`
+		)
+		VALUES
+		(#{welfareId},#{staffNo},#{name},#{tel},
+		#{money},#{birthday},#{startTime},#{endTime},#{sellerName})
+    </insert>
+
+	<delete id="del" parameterType="java.lang.Integer">
+		DELETE from member_welfare_send_detail where welfare_id=#{welfareSendId}
+	</delete>
+</mapper>

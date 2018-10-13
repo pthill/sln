@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+    <bean id="adminJob" class="com.sln.job.AdminJob"/>
+    
+    <bean id="jdBasicData" class="com.sln.job.JDBasicData"></bean>
+    
+    <bean id="jdMessageMonitor" class="com.sln.job.JDMessageMonitor"></bean>
+
+    <!-- 每月结算任务 -->
+    <bean id="jobSettlement" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobSettlement"/>
+    </bean>
+    <bean id="jobSettlementTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobSettlement"/>
+        </property>
+        <property name="cronExpression">
+        	<!-- 每月2日凌晨5时 -->
+            <value>0 0 5 2 * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 系统完成订单任务 -->
+    <bean id="jobSystemFinishOrder" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobSystemFinishOrder"/>
+    </bean>
+    <bean id="jobSystemFinishOrderTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobSystemFinishOrder"/>
+        </property>
+        <property name="cronExpression">
+            <!-- <value>0 0/10 * * * ?</value> -->
+            <value>0 0/30 * * * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 系统清理购物车任务 -->
+    <bean id="jobClearCart" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobClearCart"/>
+    </bean>
+    <bean id="jobClearCartTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobClearCart"/>
+        </property>
+        <property name="cronExpression">
+            <!-- <value>0 10 2 * * ?</value> -->
+            <value>0 0 0/8 * * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 系统生成Solr索引 -->
+    <bean id="jobSearchSolr" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobSearchSolr"/>
+    </bean>
+    <bean id="jobSearchSolrTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobSearchSolr"/>
+        </property>
+        <property name="cronExpression">
+             <!-- <value>0 0/10 * * * ?</value> -->
+            <value>0 0/10 * * * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 更新敏感词的索引值 -->
+    <bean id="jobUpdateSearchRecordIndex" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobUpdateSearchRecordIndex"/>
+    </bean>
+    <bean id="jobUpdateSearchRecordIndexTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobUpdateSearchRecordIndex"/>
+        </property>
+        <property name="cronExpression">
+            <!-- <value>0 0 5 * * ?</value> -->
+            <value>0 0 5 * * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 定时任务设定商家的评分任务 -->
+    <bean id="jobSetSellerScore" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobSetSellerScore"/>
+    </bean>
+    <bean id="jobSetSellerScoreTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobSetSellerScore"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 0/15 * * * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 定时任务系统自动取消24小时没有付款订单 -->
+    <bean id="jobSystemCancelOrder" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobSystemCancelOrder"/>
+    </bean>
+    <bean id="jobSystemCancelOrderTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobSystemCancelOrder"/>
+        </property>
+        <property name="cronExpression">
+            <!-- <value>0 5/10 * * * ?</value> -->
+            <value>0 0 0/12 * * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 定时任务系统自动关闭过期的集合竞价并生成尾款订单 -->
+    <bean id="jobBiddingBidding" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobBiddingBidding"/>
+    </bean>
+    <bean id="jobBiddingBiddingTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobBiddingBidding"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 1/12 * * * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 定时任务设定商家各项统计数据 -->
+    <bean id="jobSellerStatistics" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobSellerStatistics"/>
+    </bean>
+    <bean id="jobSellerStatisticsTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobSellerStatistics"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 0/10 * * * ?</value>
+        </property>
+    </bean>
+    
+    <!-- 会员年度经验值递减任务 -->
+    <bean id="jobGradeValueDown" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobGradeValueDown"/>
+    </bean>
+    <bean id="jobGradeValueDownTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobGradeValueDown"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 20 4 * * ?</value>
+        </property>
+    </bean>
+
+	<!-- 自动获取JD商品信息 -->
+    <bean id="jobGetJdDataDown" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="jdBasicData"/>
+        <property name="targetMethod" value="jobGetJdData"/>
+    </bean>
+    
+    <bean id="jobGetJdDataDownTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobGetJdDataDown"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 30 11 7 2 ?</value>
+        </property>
+    </bean>
+
+    <!-- 拉取京东商品、订单、支付等变更消息 -->
+    <bean id="jobMonitorJDMessage" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="jdMessageMonitor"/>
+        <property name="targetMethod" value="monitorProduct"/>
+    </bean>
+    <bean id="jobMonitorJDMessageTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobMonitorJDMessage"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 0/5 * * * ?</value>
+        </property>
+    </bean>
+
+    <!--每天8点将所有已确认收货未退款的订单且批次号为空的退款订单查询出来-->
+    <bean id="jobProductBack" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobProductBackOrder"/>
+    </bean>
+    <bean id="jobProductTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobProductBack"/>
+        </property>
+        <property name="cronExpression">
+            <!-- 每天早上8点 -->
+            <value>0 0 8 * * ?</value>
+        </property>
+    </bean>
+    <!--每天早上8点将过期的商品下架-->
+    <bean id="jobProductDown" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="adminJob"/>
+        <property name="targetMethod" value="jobProductDown" />
+    </bean>
+    <bean id="jobProductDownTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="jobProductDown"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 0/30 * * * ?</value>
+        </property>
+    </bean>
+
+
+    <bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="jobSettlementTrigger"/>
+                <ref bean="jobSystemFinishOrderTrigger"/>
+                <ref bean="jobClearCartTrigger"/>
+                <ref bean="jobSearchSolrTrigger"/>
+                <ref bean="jobSetSellerScoreTrigger"/>
+                <ref bean="jobSystemCancelOrderTrigger"/>
+                <ref bean="jobSellerStatisticsTrigger"/>
+                <ref bean="jobUpdateSearchRecordIndexTrigger"/>
+                <ref bean="jobBiddingBiddingTrigger"/>
+                <ref bean="jobGradeValueDownTrigger"/>
+                <ref bean="jobGetJdDataDownTrigger"/>
+                <!-- 
+                <ref bean="jobMonitorJDMessageTrigger"/>
+                 -->
+                <ref bean="jobProductDownTrigger" />
+                <ref bean="jobProductTrigger"/>
+            </list>
+        </property>
+        <property name="taskExecutor" ref="executor"/>
+    </bean>
+
+    <bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10"/>
+        <property name="maxPoolSize" value="100"/>
+        <property name="queueCapacity" value="500"/>
+    </bean>
+</beans>

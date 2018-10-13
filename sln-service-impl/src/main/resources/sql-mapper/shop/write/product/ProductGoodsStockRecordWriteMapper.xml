@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.product.ProductGoodsStockRecordWriteDao">
+	<resultMap id="ProductGoodsStockRecordResult" type="com.sln.entity.product.ProductGoodsStockRecord">
+			<result property="id" column="id" />
+			<result property="productGoodsId" column="product_goods_id" />
+			<result property="sku" column="sku" />
+			<result property="oldStock" column="old_stock" />
+			<result property="oldStockWarning" column="old_stock_warning" />
+			<result property="oldMallPcPrice" column="old_mall_pc_price" />
+			<result property="oldMalMobilePrice" column="old_mal_mobile_price" />
+			<result property="newStock" column="new_stock" />
+			<result property="newStockWarning" column="new_stock_warning" />
+			<result property="newMallPcPrice" column="new_mall_pc_price" />
+			<result property="newMalMobilePrice" column="new_mal_mobile_price" />
+			<result property="updateTime" column="update_time" />
+			<result property="updateUserName" column="update_user_name" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="ProductGoodsStockRecordResult">
+		select
+		   *
+		from `product_goods_stock_record`
+		where `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.sln.entity.product.ProductGoodsStockRecord">
+        update `product_goods_stock_record` 
+    	<set>
+			<if test="id != null">`id`= #{id},</if>
+			<if test="productGoodsId != null">`product_goods_id`= #{productGoodsId},</if>
+			<if test="sku != null">`sku`= #{sku},</if>
+			<if test="oldStock != null">`old_stock`= #{oldStock},</if>
+			<if test="oldStockWarning != null">`old_stock_warning`= #{oldStockWarning},</if>
+			<if test="oldMallPcPrice != null">`old_mall_pc_price`= #{oldMallPcPrice},</if>
+			<if test="oldMalMobilePrice != null">`old_mal_mobile_price`= #{oldMalMobilePrice},</if>
+			<if test="newStock != null">`new_stock`= #{newStock},</if>
+			<if test="newStockWarning != null">`new_stock_warning`= #{newStockWarning},</if>
+			<if test="newMallPcPrice != null">`new_mall_pc_price`= #{newMallPcPrice},</if>
+			<if test="newMalMobilePrice != null">`new_mal_mobile_price`= #{newMalMobilePrice},</if>
+			<if test="updateTime != null">`update_time`= #{updateTime},</if>
+			<if test="updateUserName != null">`update_user_name`= #{updateUserName}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.sln.entity.product.ProductGoodsStockRecord" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`product_goods_stock_record`
+		(
+			
+			`product_goods_id`,
+			`sku`,
+			`old_stock`,
+			`old_stock_warning`,
+			`old_mall_pc_price`,
+			`old_mal_mobile_price`,
+			`new_stock`,
+			`new_stock_warning`,
+			`new_mall_pc_price`,
+			`new_mal_mobile_price`,
+			`update_time`,
+			`update_user_name`
+		)
+		values
+		(
+			
+			#{productGoodsId},
+			#{sku},
+			#{oldStock},
+			#{oldStockWarning},
+			#{oldMallPcPrice},
+			#{oldMalMobilePrice},
+			#{newStock},
+			#{newStockWarning},
+			#{newMallPcPrice},
+			#{newMalMobilePrice},
+			now(),
+			#{updateUserName}
+		)
+	</insert>
+	
+	<select id="count" resultType="java.lang.Integer">
+        select count(1) from `product_goods_stock_record`
+        <include refid="whereConditions"/>
+    </select>
+    
+    <select id="page" resultType="com.sln.entity.product.ProductGoodsStockRecord">
+        select
+        	*
+        from `product_goods_stock_record`
+        <include refid="whereConditions"/>
+        order by id desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+    <sql id="whereConditions">
+        <where>
+        	<if test="param1 != null">
+        		<if test="param1.q_productGoodsId != null">
+	                and `product_goods_id`= #{param1.q_productGoodsId}
+	            </if>
+        	</if>
+        </where>
+    </sql>
+</mapper>

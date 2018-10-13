@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.portal.ParkAdvantageWriteDao">
+	<resultMap id="ParkAdvantageResult" type="com.sln.entity.portal.ParkAdvantage">
+		<result property="id" column="id" />
+		<result property="order" column="order" />
+		<result property="parkId" column="park_id" />
+		<result property="title" column="title" />
+		<result property="state" column="state" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+	</resultMap>
+
+
+	<update id="update" parameterType="com.sln.entity.portal.ParkAdvantage">
+		update `park_advantage`
+		<set>
+			<if test="order != null">`order`= #{order},</if>
+			<if test="parkId != null">`park_id`= #{parkId},</if>
+			<if test="title != null">`title`= #{title},</if>
+			<if test="state != null">`state`= #{state},</if>
+			<if test="remark != null">`remark`= #{remark},</if>
+			`update_time`= now()
+		</set>
+		where `id` = #{id}
+	</update>
+
+	<insert id="insert" parameterType="com.sln.entity.portal.ParkAdvantage" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into
+		`park_advantage`
+		(
+
+		`order`,
+		`park_id`,
+		`title`,
+		`state`,
+		`create_time`,
+		`update_time`,
+		`remark`
+		)
+		values
+		(
+
+		#{order},
+		#{parkId},
+		#{title},
+		#{state},
+		now(),
+		now(),
+		#{remark}
+		)
+	</insert>
+
+	<delete id="del" parameterType="java.lang.Integer">
+		DELETE FROM park_advantage where id=#{id}
+	</delete>
+
+</mapper>

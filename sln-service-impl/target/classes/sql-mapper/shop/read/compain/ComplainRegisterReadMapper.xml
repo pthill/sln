@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.compain.ComplainRegisterReadDao">
+	<resultMap id="ComplainRegisterResult" type="com.sln.entity.compain.ComplainRegister">
+			<result property="id" column="id" />
+			<result property="complainSeller" column="complain_seller" />
+			<result property="complainType" column="complain_type" />
+			<result property="complainPerson" column="complain_person" />
+			<result property="complainTime" column="complain_time" />
+			<result property="createPerson" column="create_person" />
+			<result property="updateTime" column="update_time" />
+		    <result property="desceinfo" column="desceinfo" />
+	</resultMap>
+	
+	<select id="getSellEliminate" parameterType="java.util.Map" resultType="com.sln.entity.compain.ComplainRegister">
+		select
+		   id,complain_seller,complain_type,complain_person,complain_time,create_person,desceinfo
+		from complain_register
+		<include refid="selectColumn"/>
+		order by id desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<sql id="selectColumn">
+		where 1=1
+		<trim  suffixOverrides="," >
+		<if test="queryMap.q_complainSeller != null and queryMap.q_complainSeller != ''" >
+			    and complain_seller =  #{queryMap.q_complainSeller}
+			</if>
+		<if test="queryMap.q_complainType != null and queryMap.q_complainType != ''" >
+			    and complain_type =  #{queryMap.q_complainType}
+			</if>
+		<if test="queryMap.q_complainPerson != null and queryMap.q_complainPerson != ''" >
+			    and complain_person =  #{queryMap.q_complainPerson}
+			</if>
+		<if test="queryMap.q_complainTime != null and queryMap.q_complainTime != ''" >
+			    and complain_time =  #{queryMap.q_complainTime}
+			</if>
+		</trim>
+	</sql>
+	
+	<!--获取总条数getSellersCount  -->
+	<select id="getSellersCount" resultType="java.lang.Integer"  parameterType="java.util.Map">
+	select count(1) from complain_register
+	</select>
+	
+	<!-- getCountBySellerId -->
+	<select id="getCountBySellerId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	SELECT COUNT(1) FROM seller a INNER  JOIN complain_register b ON a.id=b.seller_id AND b.seller_id=#{sellerId} GROUP BY seller_name 
+	</select>
+</mapper>

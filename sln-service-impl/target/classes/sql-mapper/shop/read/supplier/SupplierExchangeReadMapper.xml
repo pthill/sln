@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.supplier.SupplierExchangeReadDao">
+	<resultMap id="SupplierExchangeResult" type="com.sln.entity.supplier.SupplierExchange">
+			<result property="id" column="id" />
+			<result property="exchangeSn" column="exchange_sn" />
+			<result property="orderSn" column="order_sn" />
+			<result property="productName" column="product_name" />
+			<result property="productId" column="product_id" />
+			<result property="memberName" column="member_name" />
+			<result property="memberId" column="member_id" />
+			<result property="remark" column="remark" />
+			<result property="exchangeNumber" column="exchange_number" />
+			<result property="exchangeState" column="exchange_state" />
+			<result property="createTime" column="create_time" />
+			<result property="receiptTime" column="receipt_time" />
+			<result property="deliverTime" column="deliver_time" />
+			<result property="returnTime" column="return_time" />
+			<result property="exchangeId" column="exchange_id" />
+	</resultMap>
+	<sql id="whereConditions">
+		where 1 = 1
+			<if test="queryMap.q_exchangeState != null and queryMap.q_exchangeState != ''">
+				and t.exchange_state = #{queryMap.q_exchangeState}
+			</if>
+			<if test="queryMap.q_orderSn != null and queryMap.q_orderSn != ''">
+				and t.order_sn = #{queryMap.q_orderSn}
+			</if>
+	</sql>
+	<select id="getPage" resultMap="SupplierExchangeResult">
+		select id,exchange_id,exchange_sn,order_sn,product_id,product_name,member_id,member_name,remark
+		,exchange_number,exchange_state,create_time,receipt_time,deliver_time,return_time
+		 from supplier_exchange 
+		 <include refid="whereConditions"></include>
+		 order by create_time desc
+		 <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<select id="getPageCount" resultType="java.lang.Integer">
+		select count(0)
+			 from order_delivery t
+			 <include refid="whereConditions"/>
+	</select>
+</mapper>

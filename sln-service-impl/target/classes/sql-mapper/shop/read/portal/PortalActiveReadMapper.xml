@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.portal.PortalActiveReadDao">
+	<resultMap id="PortalActiveResult" type="com.sln.entity.portal.PortalActive">
+		<result property="id" column="id" />
+		<result property="title" column="title" />
+		<result property="order" column="order" />
+		<result property="parkId" column="park_id" />
+		<result property="address" column="address" />
+		<result property="state" column="state" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="status" column="status" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="remark" column="remark" />
+		<result property="img" column="img" />
+		<result property="description" column="description" />
+		<result property="parkName" column="parkName" />
+		<result property="author" column="author" />
+	</resultMap>
+
+	<select id="get" parameterType="Integer" resultMap="PortalActiveResult">
+		SELECT a.*, p.park_name as parkName from portal_active a
+        left join park p on p.id=a.park_id
+		where a.`id` = #{id}
+	</select>
+
+	<select id="getList" resultMap="PortalActiveResult">
+		SELECT
+			p.id,p.title,p.start_time,p.end_time,p.status,p.state,p.remark,p.img,p.address,p.description,p.author,k.park_name as parkName
+		FROM
+			portal_active p
+        left join park k on k.id=p.park_id
+		where p.`status`=1
+		<if test="parkId !=null and parkId !=0 ">
+			order by p.park_id= #{parkId}  desc
+		</if>
+	</select>
+
+	<select id="getPage"  resultMap="PortalActiveResult">
+		SELECT a.*, p.park_name as parkName from portal_active a
+        left join park p on p.id=a.park_id
+		<include refid="getCondition"/>
+		<if test="queryMap.parkId !=null and queryMap.parkId !=0 ">
+			order by a.park_id= #{queryMap.parkId} desc
+		</if>
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getPageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1)
+		from `portal_active` a
+		<include refid="getCondition"/>
+	</select>
+
+	<sql id="getCondition">
+		<where>
+			<if test="queryMap.q_title != null and queryMap.q_title !=''">
+				and a.title like CONCAT('%',#{queryMap.q_title},'%')
+			</if>
+			<if test="queryMap.q_state != null and queryMap.q_state !=''">
+				and a.state = #{queryMap.q_state}
+			</if>
+			<if test="queryMap.q_parkId != null and queryMap.q_parkId !=''">
+				and a.park_id = #{queryMap.q_parkId}
+			</if>
+			<if test="queryMap.q_status != null and queryMap.q_status !=''">
+				and a.status = #{queryMap.q_status}
+			</if>
+		</where>
+	</sql>
+
+	<select id="isTitleExist"  resultType="java.lang.Integer">
+		select count(1)
+		from `portal_active`
+		where `title` = #{title}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+		<if test="parkId != null">
+			and park_id =#{parkId}
+		</if>
+	</select>
+
+	<select id="isOrderExist"  resultType="java.lang.Integer">
+		select count(1)
+		from `portal_active`
+		where `order` = #{order}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+		<if test="parkId != null">
+			and park_id =#{parkId}
+		</if>
+	</select>
+</mapper>

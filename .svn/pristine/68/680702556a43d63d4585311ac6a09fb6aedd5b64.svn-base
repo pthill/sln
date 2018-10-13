@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.jd.JdProductReadDao">
+	<resultMap id="JdProductResult" type="com.sln.entity.jd.JdProduct">
+			<result property="id" column="id" />
+			<result property="sku" column="sku" />
+			<result property="name" column="name" />
+			<result property="price" column="price" />
+			<result property="jdprice" column="jdprice" />
+			<result property="param" column="param" />
+			<result property="introduction" column="introduction" />
+			<result property="imagePath" column="imagePath" />
+			<result property="skuState" column="skuState" />
+			<result property="updateState" column="updateState" />
+			<result property="catId" column="catId" />
+	</resultMap>
+	
+	<!-- 分页获取商品详情 -->
+	<select id="getJdProductList" resultMap="JdProductResult">
+		select id,sku,name,price,jdprice,param,introduction,imagePath,skuState,updateState,catId from jd_product
+		where skuState = 1
+		limit #{start},#{size}
+	</select>
+	
+	<select id="getJdProductBySku" resultMap="JdProductResult" parameterType="String">
+		select id,sku,name,price,jdprice,param,introduction,imagePath,skuState,updateState,catId from jd_product
+			where 1=1 and sku=#{sku}
+	</select>
+</mapper>

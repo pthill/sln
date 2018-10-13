@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.portal.RecommendServiceWriteDao">
+    <resultMap id="RecommendServiceResult" type="com.sln.entity.portal.RecommendService">
+        <result property="id" column="id" />
+        <result property="serviceId" column="service_id" />
+        <result property="order" column="order" />
+        <result property="state" column="state" />
+        <result property="img" column="img" />
+        <result property="parkId" column="park_id"/>
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+
+    <update id="update" parameterType="com.sln.entity.portal.RecommendService">
+        update `recommend_service`
+        <set>
+            <if test="serviceId != null">`service_id`= #{serviceId},</if>
+            <if test="order != null">`order`= #{order},</if>
+            <if test="state != null">`state`= #{state},</if>
+            <if test="img != null">`img`= #{img},</if>
+            <if test="parkId != null">`park_id`= #{parkId},</if>
+            `update_time`= now()
+        </set>
+        where `id` = #{id}
+    </update>
+
+    <insert id="insert" parameterType="com.sln.entity.portal.RecommendService" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into
+        `recommend_service`
+        (
+        `service_id`,
+        `order`,
+        `state`,
+        `img`,
+        `park_id`,
+        `create_time`,
+        `update_time`
+        )
+        values
+        (
+        #{serviceId},
+        #{order},
+        #{state},
+        #{img},
+        #{parkId},
+        now(),
+        now()
+        )
+    </insert>
+
+    <delete id="del" parameterType="java.lang.Integer">
+        DELETE  from `recommend_service` where  id=#{id}
+    </delete>
+
+</mapper>

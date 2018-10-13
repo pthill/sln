@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.member.MemberSpecialIntegralReadDao">
+    <resultMap id="MemberSpecialIntegralResult" type="com.sln.entity.member.MemberSpecialIntegral">
+        <result property="id" column="id" />
+        <result property="memberId" column="member_id" />
+        <result property="sellerId" column="seller_id" />
+        <result property="value" column="value" />
+        <result property="start_time" column="startTime" />
+        <result property="end_time"   column="endTime" />
+        <result property="create_time" column="createTime" />
+        <result property="update_time" column="updateTime" />
+        <result property="init_value"  column="initValue" />
+    </resultMap>
+
+    <select id="get" parameterType="Integer" resultMap="MemberSpecialIntegralResult">
+        select id,member_id,seller_id,value,start_time,end_time,create_time,update_time,init_value
+        from `member_special_integral`
+        where `id` = #{id}
+    </select>
+
+    <select id="page"  resultMap="MemberSpecialIntegralResult">
+        SELECT
+        m.id,
+        m.member_id,
+        m.seller_id,
+        m.value,
+        m.start_time,
+        m.end_time,
+        m.create_time,
+        m.update_time,
+        m.init_value
+        FROM
+        `member_special_integral` m
+        <include refid="getCondition"/>
+        order by m.end_time asc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+
+    <select id="pageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(*)
+        from `member_special_integral` m
+        <include refid="getCondition"/>
+    </select>
+
+    <sql id="getCondition">
+        <where>
+            <if test="queryMap.q_memberId != null and queryMap.q_memberId !=''">
+                and m.member_id =#{queryMap.q_memberId}
+            </if>
+            <if test="queryMap.q_sellerId != null and queryMap.q_sellerId !=''">
+                and m.seller_id = #{queryMap.q_sellerId}
+            </if>
+            <if test="queryMap.q_value != null and queryMap.q_value !=''">
+                and m.value >0
+            </if>
+            <if test="queryMap.q_endTime != null">
+                <![CDATA[ AND m.end_time  > #{queryMap.q_endTime} ]]>  
+            </if>
+            <if test="queryMap.q_startTime != null">
+                <![CDATA[ AND m.start_time  < #{queryMap.q_startTime} ]]>  
+            </if>
+
+        </where>
+    </sql>
+    
+    <select id="getValueByMemberId" parameterType="java.util.Map" resultType="java.lang.Integer">
+    	SELECT 
+    	SUM(VALUE) 
+    	from `member_special_integral` m
+        <include refid="getCondition"/>
+    </select>
+    
+</mapper>

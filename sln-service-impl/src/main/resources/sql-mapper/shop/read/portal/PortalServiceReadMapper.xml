@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.portal.PortalServiceReadDao">
+	<resultMap id="PortalServiceResult" type="com.sln.entity.portal.PortalService">
+		<result property="id" column="id" />
+		<result property="serviceName" column="service_name" />
+		<result property="order" column="order" />
+		<result property="abbreviation" column="abbreviation" />
+		<result property="code" column="code" />
+		<result property="type" column="type" />
+		<result property="pid" column="pid" />
+		<result property="menuId" column="menu_id" />
+		<result property="state" column="state" />
+		<result property="isShow" column="is_show" />
+		<result property="img" column="img" />
+		<result property="highLight" column="high_light" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="belong" column="belong"/>
+		<result property="menuName" column="menuName"/>
+		<result property="parkName" column="parkName"/>
+		<result property="url" column="url" />
+	</resultMap>
+
+	<select id="get" parameterType="Integer" resultMap="PortalServiceResult">
+         SELECT  p.*  from portal_service p where p.id=#{id}
+	</select>
+
+	<select id="getPage"  resultMap="PortalServiceResult">
+		SELECT
+		ps.*, y.parkname AS parkName,IFNULL(s.service_name,'/') as belong,pm.`name` as menuName
+		FROM
+		portal_service ps
+		LEFT JOIN (
+		SELECT
+		m.portal_menu_id,
+		group_concat(p.park_name) AS parkname,
+		group_concat(p.id) AS parkId
+		FROM
+		portal_menu_park m
+		INNER JOIN (
+		SELECT
+		p.portal_menu_id
+		FROM
+		portal_menu_park p
+		GROUP BY
+		p.portal_menu_id
+		) x ON x.portal_menu_id = m.portal_menu_id
+		INNER JOIN park p ON p.id = m.park_id
+		GROUP BY
+		m.portal_menu_id
+		) y ON y.portal_menu_id = ps.menu_id
+		LEFT JOIN portal_service s on (s.id=ps.pid and ps.pid is not null)
+		left join portal_menu pm on pm.id=ps.menu_id
+		where 1=1
+		<include refid="getCondition"/>
+		order by ps.code desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getPageForOperation" resultMap="PortalServiceResult">
+		SELECT ps.*, IFNULL(s.service_name, '/') AS belong
+        FROM portal_service ps
+        LEFT JOIN portal_service s ON (
+        ps.pid=s.id
+	    AND ps.pid IS NOT NULL)
+        WHERE ps.menu_id IN ( SELECT p.portal_menu_id FROM portal_menu_park p
+		WHERE p.park_id = #{queryMap.parkId})
+		<include refid="getCondition" />
+		order by ps.code desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getPageCountForOperation" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT count(1)
+		FROM portal_service ps
+		LEFT JOIN portal_service s ON (ps.pid=s.id AND ps.pid IS NOT NULL)
+		WHERE ps.menu_id IN (SELECT p.portal_menu_id FROM portal_menu_park p
+		WHERE p.park_id = #{queryMap.parkId})
+		<include refid="whereCondition"/>
+	</select>
+
+	<select id="getServicePage" resultMap="PortalServiceResult">
+		SELECT
+		ps.*, y.parkname AS parkName,s.service_name as belong
+		FROM
+		portal_service ps
+		LEFT JOIN (
+		SELECT
+		m.portal_menu_id,
+		group_concat(p.park_name) AS parkname,
+		group_concat(p.id) AS parkId
+		FROM
+		portal_menu_park m
+		INNER JOIN (
+		SELECT
+		p.portal_menu_id
+		FROM
+		portal_menu_park p
+		GROUP BY
+		p.portal_menu_id
+		) x ON x.portal_menu_id = m.portal_menu_id
+		INNER JOIN park p ON p.id = m.park_id
+		GROUP BY
+		m.portal_menu_id
+		) y ON y.portal_menu_id = ps.menu_id
+		LEFT JOIN portal_service s on (s.id=ps.pid and ps.pid is not null)
+		where ps.type='2'
+		<include refid="whereCondition"/>
+		order by ps.code desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getServiceCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1)
+		from `portal_service` ps
+		where ps.type='2'
+		<include refid="whereCondition"/>
+	</select>
+
+	<sql id="whereCondition">
+		<if test="queryMap.q_id != null and queryMap.q_id !=''">
+			and ps.id= #{queryMap.q_id}
+		</if>
+		<if test="queryMap.q_pid != null and queryMap.q_pid !=''">
+			and ps.pid= #{queryMap.q_pid}
+		</if>
+	</sql>
+
+	<select id="getPageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1)
+		from `portal_service` ps
+		where 1=1
+		<include refid="getCondition"/>
+	</select>
+
+	<select id="getServices"  resultMap="PortalServiceResult">
+		SELECT
+		p.id,p.pid,p.service_name,p.CODE,p.abbreviation,p.url
+		FROM `portal_service` p
+		WHERE p.type = '1' AND p.state = '1'
+		<if test="parkId !=null and parkId != 0">
+			and p.menu_id IN (SELECT mp.portal_menu_id FROM portal_menu_park mp
+			WHERE mp.park_id = #{parkId})
+		</if>
+	</select>
+
+	<select id="gerServicesByPid" parameterType="java.lang.Integer" resultMap="PortalServiceResult">
+		select p.id,p.service_name,p.code,p.abbreviation,p.pid,p.url from `portal_service` p
+		where p.pid=#{pid}
+	</select>
+
+	<sql id="getCondition">
+		<if test="queryMap.q_serviceName != null and queryMap.q_serviceName !=''">
+			and ps.service_name like CONCAT('%',#{queryMap.q_serviceName},'%')
+		</if>
+		<if test="queryMap.q_state != null and queryMap.q_state !=''">
+			and ps.state = #{queryMap.q_state}
+		</if>
+		<if test="queryMap.q_type != null and queryMap.q_type !=''">
+			and ps.type = #{queryMap.q_type}
+		</if>
+	</sql>
+	<select id="countCode"  resultType="java.lang.Integer">
+		select count(1)
+		from `portal_service`
+		where `code` = #{code} and `type`=#{type}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+	</select>
+
+	<select id="countName"  resultType="java.lang.Integer">
+		select count(1)
+		from `portal_service`
+		where `service_name` = #{name} and `type`=#{type}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+	</select>
+
+	<select id="countAbbreviation"  resultType="java.lang.Integer">
+		select count(1)
+		from `portal_service`
+		where `abbreviation` = #{abbreviation} and `type`=#{type}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+	</select>
+
+	<select id="getServicesByMenuId" parameterType="java.lang.Integer" resultMap="PortalServiceResult">
+		select p.* from portal_service p
+		where p.menu_id=#{menuId} and (p.state=1 or (p.state=1 and p.is_show=1))
+	</select>
+
+</mapper>

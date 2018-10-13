@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.member.MemberGradeIntegralLogsReadDao">
+	<resultMap id="MemberGradeIntegralLogsResult" type="com.sln.entity.member.MemberGradeIntegralLogs">
+			<result property="id" column="id" />
+			<result property="memberId" column="member_id" />
+			<result property="memberName" column="member_name" />
+			<result property="value" column="value" />
+			<result property="createTime" column="create_time" />
+			<result property="optType" column="opt_type" />
+			<result property="optDes" column="opt_des" />
+			<result property="refCode" column="ref_code" />
+			<result property="type" column="type" />
+			<result property="msiId" column="msi_id" />
+            <result property="memberSpecialIntegralId" column="memberSpecialIntegral_id" />
+	</resultMap>
+	<select id="get" parameterType="Integer" resultMap="MemberGradeIntegralLogsResult">
+		select
+		   *
+		from `member_grade_integral_logs`
+		where `id` = #{id}
+	</select>
+	
+	<select id="getMemberGradeIntegralLogsCount" resultType="Integer">
+		select
+		   count(*)
+		from `member_grade_integral_logs`
+		where `member_id` = #{memberId}
+		<if test="type !=null and type!=0">
+		and `type` = #{type}
+		</if>
+	</select>
+
+	<select id="getMemberGradeIntegralLogs" resultMap="MemberGradeIntegralLogsResult">
+		select
+		   *
+		from `member_grade_integral_logs`
+		where `member_id` = #{memberId}
+		<if test="type !=null">
+			<choose>
+				<when test="type==0">
+					and (type=2 or type=3)
+				</when>
+				<otherwise>
+					and `type` = #{type}
+				</otherwise>
+			</choose>
+		</if>
+		order by `id` desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getIntLogByMIdAndOrderSnAndOptType" resultMap="MemberGradeIntegralLogsResult">
+		select
+		   *
+		from `member_grade_integral_logs`
+		where `member_id` = #{memberId}
+		and `opt_type` = #{optType}
+		and `ref_code` = #{refCode}
+		and `type` = #{type}
+		limit 1
+	</select>
+	
+	<!-- 根据订单号获取积分使用记录 -->
+	<select id="getMemberGradeIntegralLogsByRefCode" resultMap="MemberGradeIntegralLogsResult">
+		select
+		   *
+		from `member_grade_integral_logs`
+		where `ref_code` = #{refCode}
+		and `opt_type` = 7
+		and `type` = 3
+		order by `id` desc
+	</select>
+
+	<select id="getMemberGradeIntegralLogsBySpecialId" resultMap="MemberGradeIntegralLogsResult">
+		SELECT  *
+		from `member_grade_integral_logs`
+		where `memberSpecialIntegral_id` = #{MemberSpecialIntegralId}
+        and `opt_type` = 7
+		and `type` = 3
+		and order by `id` desc
+	</select>
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.supplier.SupplierReturnWriteDao">
+	<resultMap id="SupplierReturnResult" type="com.sln.entity.supplier.SupplierReturn">
+			<result property="id" column="id" />
+			<result property="returnSn" column="return_sn" />
+			<result property="orderSn" column="order_sn" />
+			<result property="sellerId" column="seller_id" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="returnState" column="return_state" />
+			<result property="supplierId" column="supplier_id" />
+	</resultMap>
+	
+	<update id="updateSupplierReturn" parameterType="com.sln.entity.supplier.SupplierReturn">
+        update `supplier_return` 
+    	<set>
+			`update_time`= now(),
+			`return_state`= #{returnState}
+	    </set>
+        where `id` = #{id}
+	</update>
+	<update id="updateSupplierReturnByBackId">
+        update `supplier_return` 
+    	<set>
+			`update_time`= now(),
+			`return_state`= #{returnState}
+	    </set>
+        where `back_id` = #{backId}
+	</update>
+	<insert id="insertSupplierReturn" parameterType="com.sln.entity.supplier.SupplierReturn" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`supplier_return`
+		(
+			
+			`return_sn`,
+			`order_sn`,
+			`seller_id`,
+			`create_time`,
+			`return_state`,
+			`supplier_id`,
+			 member_id,
+			 member_name,
+			 back_id
+		)
+		values
+		(
+			#{returnSn},
+			#{orderSn},
+			#{sellerId},
+			now(),
+			#{returnState},
+			#{supplierId},
+			#{memberId},
+			#{memberName},
+			#{backId}
+		)
+	</insert>
+	
+	<insert id="batchInsertSupplierReturn" parameterType="java.util.List">
+		insert into 
+		`supplier_return`
+		(
+			
+			`return_sn`,
+			`order_sn`,
+			`seller_id`,
+			`create_time`,
+			`return_state`,
+			`supplier_id`,
+			 member_id,
+			 member_name,
+			  back_id
+		)
+		values
+		 <foreach collection="list" item="item" index="index" separator="," >  
+		 (
+		 	#{item.returnSn},
+			#{item.orderSn},
+			#{item.sellerId},
+			now(),
+			#{item.returnState},
+			#{item.supplierId},
+			#{item.member_id},
+			#{item.membe_name},
+			#{item.backId}
+		 )
+		 </foreach>
+	</insert>
+</mapper>

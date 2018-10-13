@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.member.WelfareCompanyReadDao">
+    <resultMap id="WelfareCompanyResult" type="com.sln.entity.member.WelfareCompany">
+        <result property="id" column="id" />
+        <result property="company" column="company" />
+        <result property="dept" column="dept" />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <select id="get" parameterType="Integer" resultMap="WelfareCompanyResult">
+        select id,company,dept,create_time
+        from `welfare_company`
+        where `id` = #{id}
+    </select>
+
+    <select id="page"  resultMap="WelfareCompanyResult">
+        SELECT
+        m.id,
+        m.company,
+        m.dept,
+        m.create_time
+        FROM
+        `welfare_company` m
+        <include refid="getCondition"/>
+        order by m.`id` desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+
+    <select id="pageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(*)
+        from `welfare_company` m
+        <include refid="getCondition"/>
+    </select>
+
+    <sql id="getCondition">
+        <where>
+            <if test="queryMap.q_company != null and queryMap.q_company !=''">
+                and m.company = #{queryMap.q_company}
+            </if>
+            <if test="queryMap.q_dept != null and queryMap.q_dept !=''">
+                and m.dept = #{queryMap.q_dept}
+            </if>
+        </where>
+    </sql>
+</mapper>

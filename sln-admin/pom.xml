@@ -1,0 +1,458 @@
+<?xml version="1.0"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0">
+    <name>sln-admin Maven Webapp</name>
+    <url>http://maven.apache.org</url>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.sln</groupId>
+        <artifactId>sln-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../sln-parent/pom.xml</relativePath>
+    </parent>
+
+    <!-- <groupId>com.sln</groupId> -->
+    <artifactId>sln-admin</artifactId>
+    <!-- <version>1.0-SNAPSHOT</version> -->
+    <packaging>war</packaging>
+
+    <dependencies>
+        <!--ejs-->
+        <dependency>
+            <groupId>com.sln</groupId>
+            <artifactId>sln-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sln</groupId>
+            <artifactId>sln-service-impl</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--db-->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+        </dependency>
+
+        <!-- web -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
+
+        <!-- spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+
+        <!-- log -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+
+        <!-- commons -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+
+        <!-- 3th -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+        </dependency>
+
+        <!--db-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        
+        <!-- gson -->
+        <dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.quartz-scheduler</groupId>
+		    <artifactId>quartz</artifactId>
+		    <version>2.2.3</version>
+		</dependency>
+		        
+        
+        <!-- solr -->
+		<dependency>
+	      <groupId>org.apache.solr</groupId>
+	      <artifactId>solr-solrj</artifactId>
+	    </dependency>
+	    
+	    <!-- shiro -->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+		</dependency>
+
+		<!-- redis客户端 -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>ROOT</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.0.M2</version>
+                <configuration>
+                    <webAppConfig>
+                        <contextPath>/</contextPath>
+                    </webAppConfig>
+                    <httpConnector>
+                        <port>8081</port>
+                        <idleTimeout>10000</idleTimeout>
+                    </httpConnector>
+                </configuration>
+            </plugin>
+ 
+	        <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <port>8081</port>
+                    <path>/</path>
+                    <uriEncoding>UTF-8</uriEncoding>
+                    <finalName>sln-admin</finalName>
+                    <server>tomcat7</server>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-war-plugin</artifactId>
+	            <version>2.4</version>
+	            <configuration>
+	                <webResources>
+	                    <resource>
+	                        <directory>src/main/webapp/WEB-INF</directory>
+	                    </resource>
+	                </webResources>
+	            </configuration>
+	        </plugin>	        
+        </plugins>
+    </build>
+
+    <profiles>
+        
+        <profile>
+            <id>dev</id>
+            <properties>
+                <sln.url.resources>http://127.0.0.1:8081</sln.url.resources>
+                <sln.static.resources>http://127.0.0.1:8081</sln.static.resources>
+                <sln.image.resources>http://resource.hhyungu.com:8066/ejsimage</sln.image.resources>
+                <sln.cookie.domain>.admin.sln.com</sln.cookie.domain>
+                <sln.cookie.name>sln_b2b2c_admin</sln.cookie.name>
+                <sln.front.url>http://127.0.0.1:8807</sln.front.url>
+                <sln.h5.url>http://127.0.0.1:8808</sln.h5.url>
+
+                <shop.write.url>jdbc:mysql://114.119.7.147:3308/sln_shop</shop.write.url>
+                <shop.write.username>root</shop.write.username>
+                <shop.write.password>Slooong12346</shop.write.password>
+                
+                <shop.read.url>jdbc:mysql://114.119.7.147:3308/sln_shop</shop.read.url>
+                <shop.read.username>root</shop.read.username>
+                <shop.read.password>Slooong12346</shop.read.password>
+                
+                <analysis.write.url>jdbc:mysql://114.119.7.147:3308/sln_analysis</analysis.write.url>
+                <analysis.write.username>root</analysis.write.username>
+                <analysis.write.password>Slooong12346</analysis.write.password>
+                
+                <analysis.read.url>jdbc:mysql://114.119.7.147:3308/sln_analysis</analysis.read.url>
+                <analysis.read.username>root</analysis.read.username>
+                <analysis.read.password>Slooong12346</analysis.read.password>
+                
+				<search.solr.url>http://resource.hhyungu.com:8066/solr</search.solr.url>
+                <search.solr.server>slncore</search.solr.server>
+
+                <!-- redis配置 -->
+                <redis.app>admin</redis.app>
+                <redis.url>120.78.180.131</redis.url>
+                <redis.port>6379</redis.port>
+                <redis.timeout>6000</redis.timeout>
+                <redis.requirepass>SlnSln512</redis.requirepass>
+
+                <pom.log.file>e:/tmp/logs/sln-admin.log</pom.log.file>
+                <pom.log.level>info</pom.log.level>
+                <pom.jdMessagelog.file>e:/tmp/logs/admin-jdMessage.log</pom.jdMessagelog.file>
+
+                <!-- 阿里大于短信接口地址 -->
+                <alidayu.sms.url>http://gw.api.taobao.com/router/rest</alidayu.sms.url>
+            </properties>
+        </profile>
+        
+        
+        <profile>
+            <id>test</id>
+            <properties>
+                <sln.url.resources>http://120.78.180.131:8081</sln.url.resources>
+                <sln.static.resources>http://120.78.180.131:8081</sln.static.resources>
+                <sln.image.resources>http://120.78.180.131:8080/ejsimage</sln.image.resources>
+                <sln.cookie.domain>.admin.sln.com</sln.cookie.domain>
+                <sln.cookie.name>sln_b2b2c_admin</sln.cookie.name>
+                <sln.front.url>http://120.78.180.131:8807</sln.front.url>
+                <sln.h5.url>http://120.78.180.131:8808</sln.h5.url>
+
+                <shop.write.url>jdbc:mysql://120.78.180.131:3306/hhyg_shop</shop.write.url>
+                <shop.write.username>root</shop.write.username>
+                <shop.write.password>slshop</shop.write.password>
+                
+                <shop.read.url>jdbc:mysql://120.78.180.131:3306/hhyg_shop</shop.read.url>
+                <shop.read.username>root</shop.read.username>
+                <shop.read.password>slshop</shop.read.password>
+                
+                <analysis.write.url>jdbc:mysql://120.78.180.131:3306/hhyg_analysis</analysis.write.url>
+                <analysis.write.username>root</analysis.write.username>
+                <analysis.write.password>slshop</analysis.write.password>
+                
+                <analysis.read.url>jdbc:mysql://120.78.180.131:3306/hhyg_analysis</analysis.read.url>
+                <analysis.read.username>root</analysis.read.username>
+                <analysis.read.password>slshop</analysis.read.password>
+                
+				<search.solr.url>http://120.78.180.131:8080/solr</search.solr.url>
+                <search.solr.server>slncore</search.solr.server>
+                
+                <!-- redis配置 -->
+                <redis.app>admin</redis.app>
+                <redis.url>120.78.180.131</redis.url>
+                <redis.port>6379</redis.port>
+                <redis.timeout>6000</redis.timeout>
+                <redis.requirepass>SlnSln512</redis.requirepass>
+
+                <pom.log.file>/tmp/logs/sln-admin.log</pom.log.file>
+                <pom.log.level>info</pom.log.level>
+                <pom.jdMessagelog.file>/tmp/logs/admin-jdMessage.log</pom.jdMessagelog.file>
+                <!-- 阿里大于短信接口地址 -->
+                <alidayu.sms.url>http://gw.api.taobao.com/router/rest</alidayu.sms.url>
+            </properties>
+        </profile>
+        
+        <!-- UAT -->
+        <profile>
+            <id>uat</id>
+            <properties>
+                <sln.url.resources>http://10.102.16.9:8081</sln.url.resources>
+                <sln.static.resources>http://10.102.16.9:8081</sln.static.resources>
+                <sln.image.resources>http://10.102.16.9:8066/ejsimage</sln.image.resources>
+                <sln.cookie.domain>.admin.sln.com</sln.cookie.domain>
+                <sln.cookie.name>sln_b2b2c_admin</sln.cookie.name>
+                <sln.front.url>http://10.102.16.9:8807</sln.front.url>
+                <sln.h5.url>http://10.102.16.9:8808</sln.h5.url>
+
+                <shop.write.url>jdbc:mysql://10.102.16.9:3306/hhyg_shop</shop.write.url>
+                <shop.write.username>root</shop.write.username>
+                <shop.write.password>root</shop.write.password>
+                
+                <shop.read.url>jdbc:mysql://10.102.16.9:3306/hhyg_shop</shop.read.url>
+                <shop.read.username>root</shop.read.username>
+                <shop.read.password>root</shop.read.password>
+                
+                <analysis.write.url>jdbc:mysql://10.102.16.9:3306/hhyg_analysis</analysis.write.url>
+                <analysis.write.username>root</analysis.write.username>
+                <analysis.write.password>root</analysis.write.password>
+                
+                <analysis.read.url>jdbc:mysql://10.102.16.9:3306/hhyg_analysis</analysis.read.url>
+                <analysis.read.username>root</analysis.read.username>
+                <analysis.read.password>root</analysis.read.password>
+                
+				<search.solr.url>http://10.102.16.9:8066/solr</search.solr.url>
+                <search.solr.server>slncore</search.solr.server>
+                
+                <!-- redis配置 -->
+                <redis.app>admin</redis.app>
+                <redis.url>10.102.16.9</redis.url>
+                <redis.port>6379</redis.port>
+                <redis.timeout>6000</redis.timeout>
+                <redis.requirepass>SlnSln512</redis.requirepass>
+                
+                <pom.log.file>/tmp/logs/sln-admin.log</pom.log.file>
+                <pom.log.level>info</pom.log.level>
+                <pom.jdMessagelog.file>/tmp/logs/admin-jdMessage.log</pom.jdMessagelog.file>
+            </properties>
+        </profile>
+        
+        <!-- 发布环境 -->
+		<profile>
+			<id>release</id>
+           	<properties>
+               	<sln.url.resources>http://admin.hhyungu.com</sln.url.resources>
+               	<sln.static.resources>http://admin.hhyungu.com</sln.static.resources>
+               	<sln.image.resources>http://resource.hhyungu.com/ejsimage</sln.image.resources>
+               	<sln.cookie.domain>.admin.hhyungu.com</sln.cookie.domain>
+               	<sln.cookie.name>com_hhyungu_admin</sln.cookie.name>
+               	<sln.front.url>http://www.hhyungu.com</sln.front.url>
+               	<sln.h5.url>http://mobile.hhyungu.com</sln.h5.url>
+
+               	<shop.write.url>jdbc:mysql://rm-wz9an7wf3708y7jo7.mysql.rds.aliyuncs.com:3306/hhyg_shop</shop.write.url>
+               	<shop.write.username>haiheyungu</shop.write.username>
+               	<shop.write.password>wzfaeF9phu</shop.write.password>
+               
+               	<shop.read.url>jdbc:mysql://rm-wz9an7wf3708y7jo7.mysql.rds.aliyuncs.com:3306/hhyg_shop</shop.read.url>
+               	<shop.read.username>haiheyungu</shop.read.username>
+               	<shop.read.password>wzfaeF9phu</shop.read.password>
+               
+               	<analysis.write.url>jdbc:mysql://rm-wz9an7wf3708y7jo7.mysql.rds.aliyuncs.com:3306/hhyg_analysis</analysis.write.url>
+               	<analysis.write.username>haiheyungu</analysis.write.username>
+               	<analysis.write.password>wzfaeF9phu</analysis.write.password>
+               
+               	<analysis.read.url>jdbc:mysql://rm-wz9an7wf3708y7jo7.mysql.rds.aliyuncs.com:3306/hhyg_analysis</analysis.read.url>
+               	<analysis.read.username>haiheyungu</analysis.read.username>
+               	<analysis.read.password>wzfaeF9phu</analysis.read.password>
+               
+				<search.solr.url>http://resource.hhyungu.com/solr/#</search.solr.url>
+               	<search.solr.server>slncore</search.solr.server>
+               	
+                <!-- redis配置 -->
+                <redis.app>admin</redis.app>
+                <redis.url>39.108.76.141</redis.url>
+                <redis.port>6379</redis.port>
+                <redis.timeout>6000</redis.timeout>
+                <redis.requirepass>SlnSln512</redis.requirepass>               	
+               
+               	<pom.log.file>/tmp/logs/sln-admin.log</pom.log.file>
+               	<pom.log.level>info</pom.log.level>
+               	<pom.jdMessagelog.file>/tmp/logs/admin-jdMessage.log</pom.jdMessagelog.file>
+           	</properties>
+       	</profile>
+        
+    </profiles>
+    <!-- 项目发布 -->
+    <distributionManagement>    
+    	<repository>    
+        	<id>nexus-releases</id>    
+        	<name>Nexus Release Repository</name>    
+        	<url>http://114.119.7.147:8081/repository/maven-releases/</url>    
+  		</repository>    
+        <snapshotRepository>    
+        	<id>nexus-snapshots</id>    
+        	<name>Nexus Snapshot Repository</name>    
+        	<url>http://114.119.7.147:8081/repository/maven-snapshots/</url>    
+   		 </snapshotRepository>    
+	</distributionManagement>
+</project>

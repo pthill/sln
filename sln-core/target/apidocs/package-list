@@ -1,0 +1,17 @@
+com.sln.core
+com.sln.core.email
+com.sln.core.excel
+com.sln.core.exception
+com.sln.core.freemarkerutil
+com.sln.core.ibatis
+com.sln.core.jd
+com.sln.core.jd.bean
+com.sln.core.jd.util
+com.sln.core.matrix
+com.sln.core.pay
+com.sln.core.pay.bean
+com.sln.core.pay.util
+com.sln.core.sms
+com.sln.core.sms.bean
+com.sln.core.sms.util
+org.apache.log4j

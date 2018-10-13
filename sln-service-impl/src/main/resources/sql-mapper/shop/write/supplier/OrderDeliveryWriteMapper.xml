@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.supplier.OrderDeliveryWriteDao">
+	<resultMap id="OrderDeliveryResult" type="com.sln.entity.supplier.OrderDelivery">
+			<result property="id" column="id" />
+			<result property="orderSn" column="order_sn" />
+			<result property="deliverySn" column="delivery_sn" />
+			<result property="createTime" column="create_time" />
+			<result property="orderTime" column="order_time" />
+			<result property="supplierId" column="supplier_id" />
+			<result property="sellerId" column="seller_id" />
+			<result property="memberId" column="member_id" />
+			<result property="memberName" column="member_name" />
+			<result property="memberPhone" column="member_phone" />
+			<result property="state" column="state" />
+			<result property="receivingAddress" column="receiving_address" />
+			<result property="updateTime" column="update_time" />
+			<result property="state" column="state" />
+	</resultMap>
+	
+	
+	<update id="updateOrderDeliveryById" parameterType="com.sln.entity.supplier.OrderDelivery">
+        update order_delivery set state= #{state},update_time=now()
+        ,waybill_number=#{waybillNumber},logistics=#{logistics},logistics_name =#{logisticsName}
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insertOrderDelivery" parameterType="com.sln.entity.supplier.OrderDelivery" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`order_delivery`
+		(
+			
+			`order_sn`,
+			`delivery_sn`,
+			`create_time`,
+			`order_time`,
+			`supplier_id`,
+			`seller_id`,
+			`member_name`,
+			`member_phone`,
+			`state`,
+			`receiving_address`,
+			`invoice_status`,
+			`invoice_title`,
+			`waybill_number`,
+			`logistics`,
+			`logistics_name`,
+			`update_time`
+		)
+		values
+		(
+			#{orderSn},
+			#{deliverySn},
+			now(),
+			#{orderTime},
+			#{supplierId},
+			#{sellerId},
+			#{memberName},
+			#{memberPhone},
+			#{state},
+			#{receivingAddress},
+			#{invoiceStatus},
+			#{invoiceTitle},
+			#{waybillNumber},
+			#{logistics},
+			#{logisticsName},
+			#{updateTime}
+		)
+	</insert>
+	
+	<insert id="batchInsertOrderDelivery" parameterType="java.util.List">
+		insert into 
+		`order_delivery`
+		(
+			
+			`order_sn`,
+			`delivery_sn`,
+			`create_time`,
+			`order_time`,
+			`supplier_id`,
+			`seller_id`,
+			`member_name`,
+			`member_phone`,
+			`update_time`,
+			`state`,
+			`receiving_address`,
+			`invoice_atatus`,
+			`invoice_title`
+		)
+		values
+		 <foreach collection="list" item="item" index="index" separator="," >  
+       			 (
+	       			 #{item.orderSn},
+					#{item.deliverySn},
+					now(),
+					#{item.orderTime},
+					#{item.supplierId},
+					#{item.sellerId},
+					#{item.memberName},
+					#{item.memberPhone},
+					now(),
+					1,
+					#{item.receivingAddress},
+					#{item.invoiceStatus},
+					#{item.invoiceTitle}
+       			 )  
+    	</foreach>  
+	</insert>
+	
+</mapper>

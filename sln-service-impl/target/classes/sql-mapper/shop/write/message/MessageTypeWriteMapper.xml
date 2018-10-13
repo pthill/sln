@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.message.MessageTypeWriteDao">
+	<resultMap id="MessageTypeResult" type="com.sln.entity.message.MessageType">
+			<result property="id" column="id" />
+			<result property="typeName" column="type_name" />
+			<result property="typeNo" column="type_no" />
+			<result property="receptionType" column="reception_type" />
+			<result property="state" column="state" />
+			<result property="createUserName" column="create_user_name" />
+			<result property="createTime" column="create_time" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="MessageTypeResult">
+		select
+		   *
+		from `message_type`
+		where `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.sln.entity.message.MessageType">
+        update `message_type` 
+    	<set>
+			<if test="typeName != null and '' != typeName">`type_name`= #{typeName},</if>
+			<if test="typeNo != null">`type_no`= #{typeNo},</if>
+			<if test="receptionType != null">`reception_type`= #{receptionType},</if>
+			<if test="state != null">`state`= #{state},</if>
+			<if test="createUserName != null">`create_user_name`= #{createUserName},</if>
+			<if test="createTime != null">`create_time`= #{createTime}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.sln.entity.message.MessageType" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`message_type`
+		(
+			
+			`type_name`,
+			`type_no`,
+			`reception_type`,
+			`state`,
+			`create_user_name`,
+			`create_time`
+		)
+		values
+		(
+			
+			#{typeName},
+			#{typeNo},
+			#{receptionType},
+			#{state},
+			#{createUserName},
+			now()
+		)
+	</insert>
+	
+	<select id="count" resultType="java.lang.Integer">
+        select count(1) from `message_type`
+        <include refid="whereConditions"/>
+    </select>
+	
+	<select id="page" resultType="com.sln.entity.message.MessageType">
+        select
+        	*
+        from `message_type`
+        <include refid="whereConditions"/>
+        order by id desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+     <sql id="whereConditions">
+        <where>
+        	<if test="param1 != null">
+        		<if test="param1.q_state != null">
+        			and state = #{param1.q_state}
+        		</if>
+        		<if test="param1.q_typeName != null and '' != param1.q_typeName">
+        			and type_name  LIKE CONCAT(CONCAT('%', #{param1.q_typeName}), '%')
+        		</if>
+        		<if test="param1.q_receptionType != null">
+        			and reception_type = #{param1.q_receptionType}
+        		</if>
+        	</if>
+        </where>
+    </sql>
+</mapper>

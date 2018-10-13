@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.jd.JdProductWriteDao">
+	<resultMap id="JdProductResult" type="com.sln.entity.jd.JdProduct">
+			<result property="id" column="id" />
+			<result property="sku" column="sku" />
+			<result property="name" column="name" />
+			<result property="price" column="price" />
+			<result property="jdprice" column="jdprice" />
+			<result property="param" column="param" />
+			<result property="introduction" column="introduction" />
+			<result property="imagePath" column="imagePath" />
+			<result property="skuState" column="skuState" />
+			<result property="updateState" column="updateState" />
+	</resultMap>
+	
+	<!-- 批量新增商品详情 -->
+	<insert id="batchInsertProductDetail" parameterType="java.util.List">
+		insert into jd_product(sku,name,param,introduction,imagePath,updateState,catId) values
+		<foreach collection="list" index="index" item="item" separator=",">
+				(
+				#{item.sku},
+				#{item.name},
+				#{item.param},
+				#{item.introduction},
+				#{item.imagePath},
+				#{item.updateState},
+				#{item.catId}
+				)
+       </foreach> 
+	</insert>
+	
+	<!-- 修改商品价格 -->
+	<update id="updatePriceBySku">
+		update jd_product set price=#{price},jdprice = #{jdprice} where sku=#{sku}
+	</update>
+	<!-- 批量修改商品价格 -->
+
+	<update id="updateBatchPriceBySku">
+		update jd_product
+		<trim prefix="set" suffixOverrides=",">
+            <trim prefix="price =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                     when sku=#{item.sku} then #{item.price}
+                </foreach>
+            </trim>
+             <trim prefix="jdprice =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                     when sku=#{item.sku} then #{item.jdprice}
+                </foreach>
+            </trim>
+        </trim>
+        where sku in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.sku}
+        </foreach>
+	</update>	
+	<!-- 修改商品上下架状态 -->
+	<update id="updateStuStateBySku">
+		update jd_product set skuState=#{skuState} where sku=#{sku}
+	</update>
+	
+	<!-- 批量修改上下架状态 -->
+	<update id="updateBatchStuStateBySku">
+		update jd_product
+		<trim prefix="set" suffixOverrides=",">
+            <trim prefix="skuState =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                     when sku=#{item.sku} then #{item.skuState}
+                </foreach>
+            </trim>
+        </trim>
+        where sku in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.sku}
+        </foreach>
+	</update>	
+</mapper>

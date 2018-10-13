@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.jd.JdCommoditypoolReadDao">
+	<resultMap id="JdCommoditypoolResult" type="com.sln.entity.jd.JdCommoditypool">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="pageNum" column="page_num" />
+	</resultMap>
+	
+	<!-- 获取京东商品池信息 -->
+	
+	<select id="getJdCommoditypool" resultMap="JdCommoditypoolResult">
+		select name,page_num from jd_commoditypool limit ${start},${size}
+	</select>
+	
+	<!-- 获取京东临时SKU数据 分页 -->
+	<select id="getSku" resultType="java.lang.String">
+	select skuId from jd_temporaryskuid where state = ${state} limit ${start},${size}
+	</select>
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.operate.ParkReadDao">
+	<resultMap id="ParkResult" type="com.sln.entity.operate.Park">
+			<result property="id" column="id" />
+			<result property="parkCode" column="park_code" />
+			<result property="parkName" column="park_name" />
+			<result property="parkAddr" column="park_addr" />
+			<result property="longitude" column="longitude" />
+			<result property="latitude" column="latitude" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="state" column="state"/>
+			<result property="remark" column="remark" />
+			<result property="img" column="img"/>
+			<result property="tel" column="tel"/>
+		    <result property="area" column="area"/>
+			<result property="province" column="province"/>
+			<result property="serviceTime" column="serviceTime"/>
+		    <result property="operationNames" column="operationNames" />
+	</resultMap>
+	
+	<sql id="whereConditions">
+		where 1 =1
+			<if test="queryMap.q_parkCode != null and queryMap.q_parkCode != ''">
+				and t.park_code = #{queryMap.q_parkCode}
+			</if>
+			<if test="queryMap.q_parkName != null and queryMap.q_parkName != ''">
+				and t.park_name = #{queryMap.q_parkName}
+			</if>
+			<if test="queryMap.q_state != null and queryMap.q_state !=0">
+				and t.state =#{queryMap.q_state}
+			</if>
+	</sql>
+	
+	<select id="getPage" resultMap="ParkResult">
+		SELECT t.id,t.park_code,t.park_name,t.park_addr,t.longitude,
+		t.latitude,t.create_time,t.update_time,t.state,t.remark,
+		t.img,t.service_time,t.tel,t.area,
+		r.regionName as province,
+		s.regionName as city
+		FROM
+		park t
+		left join regions r on (r.id=t.province and r.parentId=0)
+		left join regions s on (s.id=t.city and s.parentId !=0)
+		 <include refid="whereConditions" />
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<select id="getPageCount" resultType="java.lang.Integer">
+		select count(0) from park t 
+		<include refid="whereConditions" />
+		
+	</select>
+
+	<select id="getParkList" resultMap="ParkResult">
+		SELECT t.id,t.park_code,t.park_name,t.park_addr,t.longitude,
+		t.latitude,t.create_time,t.update_time,t.state,t.remark,
+		t.img,t.service_time,t.tel,t.area,
+		r.regionName as province,
+		s.regionName as city
+		FROM
+		park t
+		left join regions r on (r.id=t.province and r.parentId=0)
+		left join regions s on (s.id=t.city and s.parentId !=0)
+	</select>
+
+	<select id="countName" resultType="java.lang.Integer">
+		SELECT count(1) from park
+		where park_name =#{name}
+		<if test="id!=null">
+			and id!=#{id}
+		</if>
+	</select>
+
+	<select id="countCode" resultType="java.lang.Integer">
+		SELECT count(1) from park
+		where park_code =#{code}
+		<if test="id!=null">
+			and id!=#{id}
+		</if>
+	</select>
+
+	<select id="getParkById" parameterType="Integer" resultMap="ParkResult">
+		select
+		id,park_code,park_name,park_addr,longitude,latitude,create_time,update_time,state,remark,tel,img,province,service_time,area,city
+		from  park
+		where id = #{id}
+	</select>
+
+	<select id="getOperationsGroupByParkId" resultMap="ParkResult">
+		SELECT o.park_id AS id,p.park_name AS parkName,group_concat(o. NAME) as operationNames
+		FROM operation o
+		LEFT JOIN park p ON p.id = o.park_id
+		GROUP BY park_id
+		ORDER BY park_id
+	</select>
+
+	<select id="getParkByArea" parameterType="java.lang.String" resultMap="ParkResult">
+       SELECT p.* from park p
+       where p.area=#{area}
+	</select>
+
+	<select id="getArea" resultType="java.lang.String">
+		select p.area from park p
+		GROUP BY p.area
+	</select>
+</mapper>

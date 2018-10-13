@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.compain.ComplainRegisterWriteDao">
+	<resultMap id="ComplainRegisterResult" type="com.sln.entity.compain.ComplainRegister">
+			<result property="id" column="id" />
+			<result property="complainSeller" column="complain_seller" />
+			<result property="complainType" column="complain_type" />
+			<result property="complainPerson" column="complain_person" />
+			<result property="complainTime" column="complain_time" />
+			<result property="createPerson" column="create_person" />
+			<result property="updateTime" column="update_time" />
+		    <result property="desceinfo" column="desceinfo" />
+		    <result property="sellerId" column="seller_id" />
+	</resultMap>
+	
+	<select id="get" parameterType="java.lang.Integer" resultMap="ComplainRegisterResult">
+		select
+		   *
+		from `complain_register`
+		where `id` = #{id}
+	</select>
+	
+	<!--删除操作  -->
+	<delete id="deleteById">
+		delete from complain_register where id = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.sln.entity.compain.ComplainRegister">
+        update `complain_register` 
+    	<set>
+			<if test="id != null">`id`= #{id},</if>
+			<if test="complainSeller != null">`complain_seller`= #{complainSeller},</if>
+			<if test="complainType != null">`complain_type`= #{complainType},</if>
+			<if test="complainPerson != null">`complain_person`= #{complainPerson},</if>
+			<if test="complainTime != null">`complain_time`= #{complainTime},</if>
+			<if test="createPerson != null">`create_person`= #{createPerson},</if>
+			<if test="desceinfo != null">`desceinfo`= #{desceinfo},</if>
+			<if test="updateTime != null">`update_time`= #{updateTime},</if>
+			<if test="sellerId != null">`seller_id`= #{sellerId}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.sln.entity.compain.ComplainRegister" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`complain_register`
+		(
+			
+			`complain_seller`,
+			`complain_type`,
+			`complain_person`,
+			`complain_time`,
+			`create_person`,
+			`desceinfo`,
+			`seller_id`
+		)
+		values
+		(
+			
+			#{complainSeller},
+			#{complainType},
+			#{complainPerson},
+			now(),
+			#{createPerson},
+		    #{desceinfo},
+			#{sellerId}
+		)
+	</insert>
+	
+</mapper>

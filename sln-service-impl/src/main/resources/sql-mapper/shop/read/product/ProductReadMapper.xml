@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.product.ProductReadDao">
+	<resultMap id="ProductResult" type="com.sln.entity.product.Product">
+		<result property="id" column="id" />
+		<result property="product_cate_id" column="productCateId" />
+		<result property="product_cate_path" column="productCatePath" />
+		<result property="name1" column="name1" />
+		<result property="name2" column="name2" />
+		<result property="keyword" column="keyword" />
+		<result property="product_brand_id" column="productBrandId" />
+		<result property="is_self" column="isSelf" />
+		<result property="cost_price" column="costPrice" />
+		<result property="protected_price" column="protectedPrice" />
+		<result property="market_price" column="marketPrice" />
+		<result property="mall_pc_price" column="mallPcPrice" />
+		<result property="mal_mobile_price" column="malMobilePrice" />
+		<result property="virtual_sales" column="virtualSales" />
+		<result property="actual_sales" column="actualSales" />
+		<result property="product_stock" column="productStock" />
+		<result property="is_norm" column="isNorm" />
+		<result property="norm_ids" column="normIds" />
+		<result property="norm_name" column="normName" />
+		<result property="state" column="state" />
+		<result property="is_top" column="isTop" />
+		<result property="up_time" column="upTime" />
+		<result property="down_time" column="downTime" />
+		<result property="description" column="description" />
+		<result property="packing" column="packing" />
+		<result property="seller_id" column="sellerId" />
+		<result property="create_id" column="createId" />
+		<result property="create_time" column="createTime" />
+		<result property="update_time" column="updateTime" />
+		<result property="seller_cate_id" column="sellerCateId" />
+		<result property="seller_is_top" column="sellerIsTop" />
+		<result property="seller_state" column="sellerState" />
+		<result property="comments_number" column="commentsNumber" />
+		<result property="product_cate_state" column="productCateState" />
+		<result property="is_invented_product" column="isInventedProduct" />
+		<result property="transport_type" column="transportType" />
+		<result property="transport_id" column="transportId" />
+		<result property="master_img" column="masterImg" />
+		<result property="product_code" column="productCode" />
+		<result property="supplier_id" column="supplierId" />
+		<result property="product_cate_name" column="productCateName" />
+		<result property="product_brand_name" column="productBrandName" />
+		<result property="seller_cate_name" column="sellerCateName" />
+		<result property="seller_name" column="sellerName" />
+		<result property="source" column="source" />
+		<result property="jdparam" column="jdparam" />
+		<result property="is_welfare_product" column="isWelfareProduct" />
+		<result property="invoice_rate" column="invoiceRate" />
+	</resultMap>
+
+	<select id="getSellerRecommendProducts" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+		where `seller_id` = #{sellerId}
+		and `seller_is_top` = 2
+		and `state` = 6
+		and `seller_state` = 1
+		and `is_welfare_product` = 1
+        <if test="size != null and size &gt; 0">limit #{size}</if>
+    </select>
+
+    <select id="getProductsByIds" parameterType="java.util.List" resultType="com.sln.entity.product.Product">
+		select
+			*
+		from `product`
+		where `id` in
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		and `is_welfare_product` = 1
+	</select>
+
+	<select id="getSellerNewProducts" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+		where `seller_id` = #{sellerId}
+		and `state` = 6
+		and `seller_state` = 1
+		and `is_welfare_product` = 1
+		order by id desc
+        <if test="size != null and size &gt; 0">limit #{size}</if>
+    </select>
+
+	<!-- 查询商铺所有在售商品 -->
+    <select id="getProductForSellerList" resultType="com.sln.entity.product.Product">
+		select
+        	*
+        from `product`
+        <include refid="getProductForSellerListCond"/>
+        <choose>
+	        <when test="sort == 0">
+	        	order by `actual_sales` desc
+	        </when>
+	        <when test="sort == 1">
+	        	order by `actual_sales` desc
+	        </when>
+	        <when test="sort == 2">  
+	        	order by `comments_number` desc
+	        </when>
+	        <when test="sort == 3">  
+	        	order by `mall_pc_price` asc
+	        </when>
+	        <when test="sort == 4">  
+	        	order by `mall_pc_price` desc
+	        </when>
+    	</choose>
+    	<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+    <!-- 查询所有在售商品 -->
+    <select id="getProducts" resultType="com.sln.entity.product.Product">
+		select
+        	*
+        from `product`
+        where 
+        `seller_state` = 1
+        and `state` = 6
+        and `product_cate_state` = 1
+        and `is_welfare_product` = 1
+        and `up_time`  &lt; now()
+    	<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+    <!-- 查询所有在售商品 -->
+    <select id="getProductsUpdateTime" resultType="com.sln.entity.product.Product">
+		select
+        	*
+        from `product`
+        where 
+        `update_time` &gt; #{dateIndex}
+        and `is_welfare_product` = 1
+    </select>
+    
+    <!-- 统计所有在售商品 -->
+    <select id="getProductsCount" resultType="Integer">
+		select
+        	count(1)
+        from `product`
+        where 
+        `seller_state` = 1
+        and `state` = 6
+        and `product_cate_state` = 1
+        and `is_welfare_product` = 1
+        and `up_time`  &lt; now()
+    </select>
+
+    <select id="getProductForSellerListCount" resultType="Integer">
+		select
+        	count(1)
+        from `product`
+        <include refid="getProductForSellerListCond"/>
+    </select>
+
+	<sql id="getProductForSellerListCond">
+		where `seller_id` = #{sellerId}
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time` &lt; now()
+	    <if test="sellerCateId != null and sellerCateId!=''">
+	    	and seller_cate_id = #{sellerCateId}
+	    </if>
+    </sql>
+
+    <select id="getRecommendProducts" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+		where `is_top` = 2
+		and `seller_state` = 1
+		and `state` = 6
+		and `product_cate_state` = 1
+		and `is_welfare_product` = 1
+        <if test="size != null and size &gt; 0">limit #{size}</if>
+    </select>
+
+	<select id="get" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+        where `id` = #{id}
+    </select>
+    
+	<select id="getProductByMax" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+        where  `is_welfare_product` = 1
+        order by id desc
+        limit 1
+    </select>
+    
+	<select id="getUpProductCountBySellerId" resultType="Integer">
+		select
+        	count(1)
+        from `product`
+        where 
+        `seller_id` = #{sellerId}
+        and `state` = 6
+        and `product_cate_state` = 1
+        and `is_welfare_product` = 1
+        and `up_time`  &lt; now()
+    </select>
+	
+	
+    
+    <select id="getBySellerId" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+        where `seller_id` = #{sellerId}
+        and `is_welfare_product` = 1
+    </select>
+    
+    
+    <!-- 查询条件 -->
+<sql id="Where_Clause">
+	where 1=1
+	and `is_welfare_product` =  1
+	<trim  suffixOverrides="," >
+	<if test="id != null and id != ''" >
+		    and id =  #{id}
+	</if>
+	<if test="productCateId != null and productCateId != ''" >
+	    and (product_cate_id =  #{productCateId} or 
+    		 `product_cate_id` in(
+		    	<!-- 平台与京东分类关联表 -->
+		    	select pc.`id` from product_cate_jd pcj  
+		    	<!-- 通过关联表的京东id 和 京东分类表的catId关联 -->
+				left join jd_category jc on pcj.`jd_category_id` = jc.`catId` 
+				<!-- 通过京东分类表的ID 关联 平台的jd_cat_id 查找到京东分类在平台所对应的ID-->
+ 			    left join product_cate pc on jc.`catId` = pc.`jd_cat_id`   
+				where pcj.`product_cate_id` = #{cateId})
+			)
+	</if>
+	<if test="productCatePath != null and productCatePath != ''" >
+		    and product_cate_path =  #{productCatePath}
+	</if>
+	<if test="keyword != null and keyword != ''" >
+		    and keyword =  #{keyword}
+		</if>
+	<if test="productBrandId != null and productBrandId != ''" >
+		    and product_brand_id =  #{productBrandId}
+		</if>
+	<if test="isSelf != null and isSelf != ''" >
+		    and is_self =  #{isSelf}
+		</if>
+	<if test="isNorm != null and isNorm != ''" >
+		    and is_norm =  #{isNorm}
+		</if>
+	<if test="state != null and state != ''" >
+		    and state =  #{state}
+		</if>
+	<if test="isTop != null and isTop != ''" >
+		    and is_top =  #{isTop}
+		</if>
+	<if test="sellerId != null and sellerId != ''" >
+		    and seller_id =  #{sellerId}
+		</if>
+	<if test="sellerCateId != null and sellerCateId != ''" >
+		    and seller_cate_id =  #{sellerCateId}
+		</if>
+	<if test="sellerIsTop != null and sellerIsTop != ''" >
+		    and seller_is_top =  #{sellerIsTop}
+		</if>
+	<if test="sellerState != null and sellerState != ''" >
+		    and seller_state =  #{sellerState}
+		</if>
+	<if test="productCateState != null and productCateState != ''" >
+		    and product_cate_state =  #{productCateState}
+		</if>
+	<if test="isInventedProduct != null and isInventedProduct != ''" >
+		    and is_invented_product =  #{isInventedProduct}
+		</if>
+	<if test="transportId != null and transportId != ''" >
+		    and transport_id =  #{transportId}
+		</if>	
+	<if test="productCode != null and productCode != ''" >
+		    and product_code =  #{productCode}
+	</if>
+	</trim>
+</sql>
+    
+    <!-- 根据分类ID获取商品 -->
+    <select id="getByCateId" resultType="com.sln.entity.product.Product">
+        select
+        	`id`,
+	        `product_cate_id`,
+	        `product_cate_path`,
+	        `name1`,
+	        `product_brand_id`,
+	        `is_self`,
+	        `cost_price`,
+	        `protected_price`,
+	        `market_price`,
+	        `mall_pc_price`,
+	        `mal_mobile_price`,
+	        `virtual_sales`,
+	        `actual_sales`,
+	        `product_stock`,
+	        `is_norm`,
+	        `norm_ids`,
+	        `norm_name`,
+	        `state`,
+	        `is_top`,
+	        `up_time`,
+	        `seller_id`,
+	        `create_id`,
+	        `create_time`,
+	        `update_time`,
+	        `seller_cate_id`,
+	        `seller_is_top`,
+	        `seller_state`,
+	        `comments_number`,
+	        `product_cate_state`,
+	        `is_invented_product`,
+	        `master_img`,
+	        `transport_id`,
+	        `transport_type`,
+	        `source`,
+	        `jdparam`
+        from `product`
+        where 
+        	(`product_cate_id` = #{cateId} or 
+        	 `product_cate_id` in(
+			    	<!-- 平台与京东分类关联表 -->
+			    	select pc.`id` from product_cate_jd pcj  
+			    	<!-- 通过关联表的京东id 和 京东分类表的catId关联 -->
+					left join jd_category jc on pcj.`jd_category_id` = jc.`catId` 
+					<!-- 通过京东分类表的ID 关联 平台的jd_cat_id 查找到京东分类在平台所对应的ID-->
+	 			    left join product_cate pc on jc.`catId` = pc.`jd_cat_id`   
+					where pcj.`product_cate_id` = #{cateId})
+        	)
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+	        <if test="doSelf == 1">
+	        	and `is_self` = 1
+	        </if>
+	        <if test="store == 1">
+	        	and `product_stock` != 0
+	        </if>
+        <choose>
+	        <when test="sort == 0">
+	        	order by `actual_sales` desc
+	        </when>
+	        <when test="sort == 1">
+	        	order by `actual_sales` desc
+	        </when>
+	        <when test="sort == 2">  
+	        	order by `comments_number` desc
+	        </when>
+	        <when test="sort == 3">  
+	        	order by `mall_pc_price` asc
+	        </when>
+	        <when test="sort == 4">  
+	        	order by `mall_pc_price` desc
+	        </when>
+    	</choose>  
+    </select>
+    
+    <select id="getByCateIdTop" resultType="com.sln.entity.product.Product">
+        select
+        	`id`,
+	        `product_cate_id`,
+	        `product_cate_path`,
+	        `name1`,
+	        `product_brand_id`,
+	        `is_self`,
+	        `cost_price`,
+	        `protected_price`,
+	        `market_price`,
+	        `mall_pc_price`,
+	        `mal_mobile_price`,
+	        `virtual_sales`,
+	        `actual_sales`,
+	        `product_stock`,
+	        `is_norm`,
+	        `norm_ids`,
+	        `norm_name`,
+	        `state`,
+	        `is_top`,
+	        `up_time`,
+	        `seller_id`,
+	        `create_id`,
+	        `create_time`,
+	        `update_time`,
+	        `seller_cate_id`,
+	        `seller_is_top`,
+	        `seller_state`,
+	        `comments_number`,
+	        `product_cate_state`,
+	        `is_invented_product`,
+	        `master_img`,
+	        `transport_id`,
+	        `transport_type`,
+	        `source`,
+	        `jdparam`,
+	        `product_code`
+        from `product`
+        where 
+	        `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+	        <if test="cateId != null and cateId != 0" >
+		    	and (`product_cate_id` = #{cateId} or 
+			    	 `product_cate_id` in(
+				    	<!-- 平台与京东分类关联表 -->
+				    	select pc.`id` from product_cate_jd pcj  
+				    	<!-- 通过关联表的京东id 和 京东分类表的catId关联 -->
+						left join jd_category jc on pcj.`jd_category_id` = jc.`catId` 
+						<!-- 通过京东分类表的ID 关联 平台的jd_cat_id 查找到京东分类在平台所对应的ID-->
+		 			    left join product_cate pc on jc.`catId` = pc.`jd_cat_id`   
+						where pcj.`product_cate_id` = #{cateId})
+					)
+			</if>
+        order by 
+        	`is_top` desc, `id` desc
+        	limit #{limitSize}
+    </select>
+    
+     <select id="getByCateIdLeft" resultType="com.sln.entity.product.Product">
+        select
+        	`id`,
+	        `product_cate_id`,
+	        `product_cate_path`,
+	        `name1`,
+	        `product_brand_id`,
+	        `is_self`,
+	        `cost_price`,
+	        `protected_price`,
+	        `market_price`,
+	        `mall_pc_price`,
+	        `mal_mobile_price`,
+	        `virtual_sales`,
+	        `actual_sales`,
+	        `product_stock`,
+	        `is_norm`,
+	        `norm_ids`,
+	        `norm_name`,
+	        `state`,
+	        `is_top`,
+	        `up_time`,
+	        `seller_id`,
+	        `create_id`,
+	        `create_time`,
+	        `update_time`,
+	        `seller_cate_id`,
+	        `seller_is_top`,
+	        `seller_state`,
+	        `comments_number`,
+	        `product_cate_state`,
+	        `is_invented_product`,
+	        `master_img`,
+	        `transport_id`,
+	        `transport_type`,
+	        `source`,
+	        `jdparam`
+        from `product`
+        where 
+	         `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+	         <if test="cateId != null and cateId != 0" >
+		    	and (`product_cate_id` = #{cateId} or 
+		    		 `product_cate_id` in(
+				    	<!-- 平台与京东分类关联表 -->
+				    	select pc.`id` from product_cate_jd pcj  
+				    	<!-- 通过关联表的京东id 和 京东分类表的catId关联 -->
+						left join jd_category jc on pcj.`jd_category_id` = jc.`catId` 
+						<!-- 通过京东分类表的ID 关联 平台的jd_cat_id 查找到京东分类在平台所对应的ID-->
+		 			    left join product_cate pc on jc.`catId` = pc.`jd_cat_id`   
+						where pcj.`product_cate_id` = #{cateId})
+					)
+			</if>
+        order by 
+        	`actual_sales` desc
+        	 limit 6
+    </select>
+    
+   <select id="getProductsBySellerId" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+      	where seller_id = #{sellerid}
+      	and `is_welfare_product` = 1
+        order by id desc
+    </select>
+    
+    <!-- 商品表 列表总数-->
+	<select id="queryCount" resultType="java.lang.Integer"  parameterType="map">
+		select count(1) from product 
+		<include refid="Where_Clause"/>
+	</select>
+	  	
+	<!-- 查询商品表列表 -->
+	<select id="queryList" resultType="com.sln.entity.product.Product"  parameterType="map">
+		select 
+		 * 
+		from product 
+		<include refid="Where_Clause"/>
+		order by  create_time desc 
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	
+	<select id="getProductListBySellerCateId" resultType="com.sln.entity.product.Product">
+        select
+        	`id`,
+	        `product_cate_id`,
+	        `product_cate_path`,
+	        `name1`,
+	        `product_brand_id`,
+	        `is_self`,
+	        `cost_price`,
+	        `protected_price`,
+	        `market_price`,
+	        `mall_pc_price`,
+	        `mal_mobile_price`,
+	        `virtual_sales`,
+	        `actual_sales`,
+	        `product_stock`,
+	        `is_norm`,
+	        `norm_ids`,
+	        `norm_name`,
+	        `state`,
+	        `is_top`,
+	        `up_time`,
+	        `seller_id`,
+	        `create_id`,
+	        `create_time`,
+	        `update_time`,
+	        `seller_cate_id`,
+	        `seller_is_top`,
+	        `seller_state`,
+	        `comments_number`,
+	        `product_cate_state`,
+	        `is_invented_product`,
+	        `master_img`,
+	        `transport_id`,
+	        `transport_type`,
+	        `source`,
+	        `jdparam`,
+	        `product_code`
+        from `product`
+        where 
+        <if test="cateString != null and cateString != ''" >
+        	`seller_cate_id` in (${cateString})
+        	and 
+        </if>
+        	`seller_id` = #{sellerId}
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+        <choose>
+	        <when test="sort == 0">
+	        	order by `seller_is_top` desc
+	        </when>
+	        <when test="sort == 1">
+	        	order by `mall_pc_price` asc
+	        </when>
+	        <when test="sort == 2">  
+	        	order by `mall_pc_price` desc
+	        </when>
+	        <when test="sort == 3">  
+	        	order by `actual_sales` desc
+	        </when>
+	        <when test="sort == 4">  
+	        	order by `actual_sales` asc
+	        </when>
+	        <when test="sort == 5">  
+	        	order by `up_time` desc
+	        </when>
+	        <when test="sort == 6">  
+	        	order by `up_time` asc
+	        </when>
+    	</choose>
+    	<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+    <select id="getProductListBySellerCateIdCount" resultType="java.lang.Integer">
+		select count(1) from `product` 
+		where 
+		<if test="cateString != null and cateString != ''" >
+        	`seller_cate_id` in (${cateString})
+        	and 
+        </if>
+        	`seller_id` = #{sellerId}
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+	</select>
+	
+	<select id="getByBrandId" resultType="com.sln.entity.product.Product">
+        select
+        	*,s.seller_name as sellerName
+        from `product`
+		LEFT join seller s on s.id=seller_id
+        where `product_brand_id` = #{brandId}
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+	        <if test="doSelf == 1">
+	        	and `is_self` = 1
+	        </if>
+	        <if test="store == 1">
+	        	and `product_stock` > 0
+	        </if>
+        <choose>
+	        <when test="sort == 0">
+	        	order by `actual_sales` desc
+	        </when>
+	        <when test="sort == 1">
+	        	order by `actual_sales` desc
+	        </when>
+	        <when test="sort == 2">  
+	        	order by `comments_number` desc
+	        </when>
+	        <when test="sort == 3">  
+	        	order by `mall_pc_price` asc
+	        </when>
+	        <when test="sort == 4">  
+	        	order by `mall_pc_price` desc
+	        </when>
+    	</choose>
+    	<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+    <select id="getByBrandIdCount" resultType="java.lang.Integer">
+        select
+        	count(1)
+        from `product`
+        where `product_brand_id` = #{brandId}
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+	        <if test="doSelf == 1">
+	        	and `is_self` = 1
+	        </if>
+	        <if test="store == 1">
+	        	and `product_stock` > 0
+	        </if>
+    </select>
+	
+	<select id="getByBrandIdTop" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+        where `product_brand_id` = #{brandId}
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+        order by 
+        	`actual_sales` desc
+        	 limit 4
+    </select>
+    
+    
+    <select id="getProductByPathCount" resultType="java.lang.Integer">
+        select
+        	count(1)
+        from `product`
+        where `product_cate_path` = #{productCatePath}
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+    </select>
+    
+    <select id="getProductByPath" resultType="com.sln.entity.product.Product">
+        select
+        	*
+        from `product`
+        where `product_cate_path` = #{productCatePath}
+	        and `seller_state` = 1
+	        and `state` = 6
+	        and `product_cate_state` = 1
+	        and `is_welfare_product` = 1
+	        and `up_time`  &lt; now()
+        <choose>
+	        <when test="sort == 0">
+	        	order by `is_top` desc, `id` desc
+	        </when>
+	        <when test="sort == 1">  
+	        	order by `mall_pc_price` asc
+	        </when>
+	        <when test="sort == 2">  
+	        	order by `mall_pc_price` desc
+	        </when>
+	        <when test="sort == 3">
+	        	order by `actual_sales` desc
+	        </when>
+	        <when test="sort == 4">  
+	        	order by `comments_number` desc
+	        </when>
+    	</choose>
+    	<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+    <select id="getProNumByTransportId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    	select
+    		count(*)
+    	from `product`
+    	where `transport_id` = #{transportId}
+    	and `is_welfare_product` = 1
+    </select>
+    
+    <select id="getProNumByTransportIdAndState" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    	select
+    		count(*)
+    	from `product`
+    	where `transport_id` = #{transportId} 
+    	and `state` = #{state}
+    	and `is_welfare_product` = 1
+    </select>
+
+	<select id="getProductsByRole"  resultMap="ProductResult">
+		SELECT x.* from (
+		SELECT p.*,pc.`name` AS product_cate_name,b.`name` AS product_brand_name,sc.`name` as seller_cate_name,
+		s.seller_name as seller_name
+		FROM product p
+		LEFT JOIN product_cate pc ON pc.id = p.product_cate_id
+		LEFT JOIN product_brand b ON b.id = p.product_brand_id
+		left join seller_cate sc on sc.id=p.seller_cate_id
+		left join seller s on s.id=p.seller_id
+		where 1=1
+		<if test="sellers!=null and sellers.size()>0">
+			and p.seller_id in
+			<foreach collection="sellers" index="index" item="item" open="(" separator="," close=")">
+				#{item.sellerId}
+			</foreach>
+		</if>
+		<if test="states!=null and states.size()>0">
+			and p.state in
+			<foreach collection="states" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		)x
+		<include refid="conditions" />
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="productCountByRole"  resultType="java.lang.Integer">
+		select count(1) from (
+		SELECT p.*  FROM product p where 1=1
+		<if test="sellers!=null and sellers.size()>0">
+			and p.seller_id in
+			<foreach collection="sellers" index="index" item="item" open="(" separator="," close=")">
+				#{item.sellerId}
+			</foreach>
+		</if>
+		<if test="states!=null and states.size()>0">
+			and p.state in
+			<foreach collection="states" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		)x
+		<include refid="conditions" />
+	</select>
+
+	<select id="getProductByRoleForSeller"  resultMap="ProductResult">
+		SELECT x.* from (
+		SELECT p.*,pc.`name` AS product_cate_name,b.`name` AS product_brand_name,sc.`name` as seller_cate_name,
+		s.seller_name as seller_name
+		FROM product p
+		LEFT JOIN product_cate pc ON pc.id = p.product_cate_id
+		LEFT JOIN product_brand b ON b.id = p.product_brand_id
+		left join seller_cate sc on sc.id=p.seller_cate_id
+		left join seller s on s.id=p.seller_id
+		where 1=1
+		<if test="suppliers!=null and suppliers.size()>0">
+			and p.supplier_id in
+			<foreach collection="suppliers" index="index" item="item" open="(" separator="," close=")">
+				#{item.id}
+			</foreach>
+		</if>
+		<if test="states!=null and states.size()>0">
+			and p.state in
+			<foreach collection="states" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		)x
+		<include refid="conditions" />
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="productCountByRoleForSeller" resultType="java.lang.Integer">
+		select count(1) from (
+		SELECT p.*  FROM product p where 1=1
+		<if test="suppliers!=null and suppliers.size()>0">
+			and p.supplier_id in
+			<foreach collection="suppliers" index="index" item="item" open="(" separator="," close=")">
+				#{item.id}
+			</foreach>
+		</if>
+		<if test="states!=null and states.size()>0">
+			and p.state in
+			<foreach collection="states" index="index" item="item" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		)x
+		<include refid="conditions" />
+	</select>
+	
+	<!-- 查询已经同步的商品有没有在京东中取消授权的 -->
+	<select id="getCancelJdProduct" resultMap="ProductResult">
+		select t.id from product t where t.source = 2 and t.product_code not in (select jd.sku from jd_product jd)
+	</select>
+	<!-- 根据product_code查询是否已经同步过京东商品 -->
+	<select id="getProductByCode" resultMap="ProductResult">
+		select t.id from product t where t.product_code = #{productCode}
+	</select>
+	<sql id="conditions">
+		where 1=1
+		<if test="queryMap.q_productCateId !=null and queryMap.q_productCateId !=''">and x.`product_cate_id`=#{queryMap.q_productCateId}</if>
+		<if test="queryMap.q_name1 != null and queryMap.q_name1 !=''" > and x.`name1`like CONCAT('%',#{queryMap.q_name1},'%')</if>
+		<if test="queryMap.q_state1 != null and queryMap.q_state1 !=''"  > and x.`state`= #{queryMap.q_state1}</if>
+		<if test="queryMap.q_source != null and queryMap.q_source !=''"  > and x.`source`= #{queryMap.q_source}</if>
+		<if test="queryMap.q_isWelfareProduct != null">and x.`is_welfare_product` = #{queryMap.q_isWelfareProduct}</if>
+	</sql>
+</mapper>

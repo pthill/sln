@@ -1,0 +1,77 @@
+.menubox .mu-line .ci-t{
+	display: inline-block;
+    width: 9px;
+    height: 6px;
+    margin-left: 2px;
+    background: url(../img/buyimg2.png) no-repeat -21px -17px;
+}
+.shortcut-right li a, .collect li a{
+	color: #fff;
+}
+.shortcut-right li a:hover,.collect li a:hover{
+	color: #7f4103;
+}
+.white{
+	color: #fff;
+}
+.wrapper{
+	background-color: #fc8207;
+}
+.settleup dt{
+	width: 180px;
+	border-radius: 30px;
+	background: #fa4007;
+}
+.seach-box .i-search{
+	width: 566px;
+	border: 2px solid #fc8207;
+	border-radius: 30px;
+	background-color: #fc8207;
+	overflow: hidden;
+}
+.seach-box .text{
+	width: 442px;
+	background-color: #fff;
+}
+.seach-box .form{
+	position: relative;
+	height: 36px;
+}
+.seach-box .button{
+	position: absolute;
+	right: 0;
+	top: 0;
+	outline: none;
+	border: 0;
+	width: 120px;
+	height: 36px;
+	border-top-right-radius: 24px;
+	border-bottom-right-radius: 24px;
+	background-color: #fc8207;
+}
+.seach-box .button:before{
+	content: "";
+	display: inline-block;
+	vertical-align: middle;
+	width: 20px;
+	height: 20px;
+	margin-right: 5px;
+	background: url(../img/search-icon.png) center no-repeat;
+	background-size: 20px;
+}
+.total-shop{
+	background-color: #fc8207;
+}
+.top-head{
+	border-bottom: 2px solid #fc8207;
+}
+#CateGorys .total-shop b, #CateGorys s{
+	background: url(../img/photo.png) -65px 0;
+}
+#logo-img{
+	height: 80px;
+}
+.settleup dl .addcart-goods-num{
+	top: 4px;
+	right: 10px;
+}

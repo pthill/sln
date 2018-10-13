@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.portal.PortalMenuWriteDao">
+	<resultMap id="PortalMenuResult" type="com.sln.entity.portal.PortalMenu">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="order" column="order" />
+			<result property="abbreviation" column="abbreviation" />
+			<result property="code" column="code" />
+			<result property="url" column="url" />
+			<result property="state" column="state" />
+		    <result property="isShow" column="is_show" />
+		    <result property="parkName" column="parkName" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="PortalMenuResult">
+		select
+		   *
+		from `portal_menu`
+		where `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.sln.entity.portal.PortalMenu">
+        update `portal_menu` 
+    	<set>
+			<if test="id != null">`id`= #{id},</if>
+			<if test="name != null">`name`= #{name},</if>
+			<if test="order != null">`order`= #{order},</if>
+			<if test="abbreviation != null">`abbreviation`= #{abbreviation},</if>
+			<if test="code != null">`code`= #{code},</if>
+			<if test="url != null">`url`= #{url},</if>
+			<if test="state != null">`state`= #{state},</if>
+			<if test="isShow != null">`is_show`= #{isShow}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.sln.entity.portal.PortalMenu" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`portal_menu`
+		(
+			
+			`name`,
+			`order`,
+			`abbreviation`,
+			`code`,
+			`url`,
+			`state`,
+		    `is_show`
+		)
+		values
+		(
+			
+			#{name},
+			#{order},
+			#{abbreviation},
+			#{code},
+			#{url},
+			#{state},
+			#{isShow}
+		)
+	</insert>
+
+	<delete id="del" >
+		DELETE FROM portal_menu where id=#{id}
+	</delete>
+	
+</mapper>

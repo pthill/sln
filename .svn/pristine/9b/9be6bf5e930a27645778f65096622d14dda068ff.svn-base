@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.jd.JdCategoryReadDao">
+	<resultMap id="JdCategoryResult" type="com.sln.entity.jd.JdCategory">
+			<result property="id" column="id" />
+			<result property="catId" column="catId" />
+			<result property="parentId" column="parentId" />
+			<result property="name" column="name" />
+			<result property="catClass" column="catClass" />
+			<result property="state" column="state" />
+	</resultMap>
+	
+	<select id="getByCatId" parameterType="Integer" resultMap="JdCategoryResult">
+		select
+		   <include refid="selectColumn"/>
+		from `jd_category`
+		where `catId` = #{id}
+	</select>
+	
+	<!-- 获取未同步到平台的分类信息-->
+	<select id="getUnCategory" resultMap="JdCategoryResult">
+		select t.catId,t.parentId,t.name,t.catClass,t.state from jd_category t where t.catClass &lt; 3 and
+		not EXISTS(select 0 from product_cate_jd t_p where t.id = t_p.product_cate_id) order by  t.catClass
+	</select>
+	<!-- 获取上级分类异常的parentId -->
+	<select id="getErrorParentId" resultMap="JdCategoryResult">
+		select DISTINCT parentId from jd_category where catClass = #{catClass} and parentId not in (select DISTINCT catid from jd_category)
+	</select>
+	<!-- 查询京东商品分类列表 -->
+	<select id="queryList" resultMap="JdCategoryResult"  parameterType="map">
+		select 
+		  <include refid="selectColumn"/>
+		from `jd_category`
+		<include refid="whereConditions"/>
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<select id="getCount" parameterType="map" resultType="java.lang.Integer">
+		select count(1) from `jd_category`
+		<include refid="whereConditions"/>
+	</select>
+	
+	<!-- 根据父级id获取分类列表 -->
+	<select id="getByPid" resultMap="JdCategoryResult">
+		select
+		   <include refid="selectColumn"/>
+		from `jd_category`
+		where `parentId` = #{pid} 
+	</select>
+	
+	<sql id="selectColumn">
+        `id`,
+        `catId`,
+        `parentId`,
+        `name`,
+        `catClass`,
+        `state`
+    </sql>
+    
+	<sql id="whereConditions">
+        <where>
+            <if test="queryMap.catId != null and '' != queryMap.catId">
+                and `catId`= #{queryMap.catId}
+            </if>
+            <if test="queryMap.parentId != null and '' != queryMap.parentId">
+                and `parentId`= #{queryMap.parentId}
+            </if>
+            <if test="queryMap.name != null and '' != queryMap.name">
+                and `name`= #{queryMap.name}
+            </if>
+            <if test="queryMap.catClass != null and '' != queryMap.catClass">
+                and `catClass`= #{queryMap.catClass}
+            </if>
+            <if test="queryMap.state != null and '' != queryMap.state">
+                and `state`= #{queryMap.state}
+            </if>
+            <if test="queryMap.firstCateId != null and '' != queryMap.firstCateId">
+                and `parentId` in (select t1.catId from jd_category t1 where t1.parentId = #{queryMap.firstCateId})
+            </if>
+        </where>
+    </sql>
+</mapper>

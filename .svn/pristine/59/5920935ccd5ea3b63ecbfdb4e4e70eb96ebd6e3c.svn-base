@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.portal.PortalActiveWriteDao">
+    <resultMap id="PortalActiveResult" type="com.sln.entity.portal.PortalActive">
+        <result property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="order" column="order" />
+        <result property="parkId" column="park_id" />
+        <result property="address" column="address" />
+        <result property="state" column="state" />
+        <result property="startTime" column="start_time" />
+        <result property="endTime" column="end_time" />
+        <result property="status" column="status" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="remark" column="remark" />
+        <result property="img" column="img" />
+        <result property="description" column="description" />
+        <result property="parkName" column="parkName" />
+        <result property="author" column="author" />
+    </resultMap>
+
+
+    <update id="update" parameterType="com.sln.entity.portal.PortalActive">
+        update `portal_active`
+        <set>
+            <if test="title != null">`title`= #{title},</if>
+            <if test="order != null">`order`= #{order},</if>
+            <if test="description != null">`description`= #{description},</if>
+            <if test="parkId != null">`park_id`= #{parkId},</if>
+            <if test="address != null">`address`= #{address},</if>
+            <if test="state != null">`state`= #{state},</if>
+            <if test="startTime != null">`start_time`= #{startTime},</if>
+            <if test="endTime != null">`end_time`= #{endTime},</if>
+            <if test="status != null">`status`= #{status},</if>
+            <if test="createTime != null">`create_time`= #{createTime},</if>
+            <if test="remark != null">`remark`= #{remark},</if>
+            <if test="img != null">`img`= #{img},</if>
+            <if test="author != null">`author`= #{author},</if>
+            update_time=now()
+        </set>
+        where `id` = #{id}
+    </update>
+
+    <insert id="insert" parameterType="com.sln.entity.portal.PortalActive" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into
+        `portal_active`
+        (
+
+        `title`,
+        `order`,
+        `park_id`,
+        `address`,
+        `state`,
+        `start_time`,
+        `end_time`,
+        `status`,
+        `create_time`,
+        `update_time`,
+        `remark`,
+        `img`,
+        `description`,
+        `author`
+        )
+        values
+        (
+
+        #{title},
+        #{order},
+        #{parkId},
+        #{address},
+        '0',
+        #{startTime},
+        #{endTime},
+        '1',
+        now(),
+        now(),
+        #{remark},
+        #{img},
+        #{description},
+        #{author}
+        )
+    </insert>
+
+    <delete id="del" parameterType="java.lang.Integer">
+        delete from  `portal_active` where id=#{id}
+    </delete>
+</mapper>

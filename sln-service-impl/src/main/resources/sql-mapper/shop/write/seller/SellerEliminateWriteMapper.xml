@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.seller.SellerEliminateWriteDao">
+	<resultMap id="SellerEliminateResult" type="com.sln.entity.seller.SellerEliminate">
+			<result property="id" column="id" />
+			<result property="kindType" column="kind_type" />
+			<result property="tipValue" column="tip_value" />
+			<result property="warnValue" column="warn_value" />
+			<result property="eliminateValue" column="eliminate_value" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<select id="get" parameterType="java.lang.Integer" resultMap="SellerEliminateResult">
+		select
+		   *
+		from `seller_eliminate`
+		where `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.sln.entity.seller.SellerEliminate">
+        update `seller_eliminate` 
+    	<set>
+			<if test="id != null">`id`= #{id},</if>
+			<if test="kindType != null">`kind_type`= #{kindType},</if>
+			<if test="tipValue != null">`tip_value`= #{tipValue},</if>
+			<if test="warnValue != null">`warn_value`= #{warnValue},</if>
+			<if test="eliminateValue != null">`eliminate_value`= #{eliminateValue},</if>
+			<if test="createTime != null">`create_time`= #{createTime},</if>
+			<if test="updateTime != null">`update_time`= #{updateTime}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.sln.entity.seller.SellerEliminate" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`seller_eliminate`
+		(
+			`kind_type`,
+			`tip_value`,
+			`warn_value`,
+			`eliminate_value`,
+			`create_time`,
+			`update_time`
+		)
+		values
+		(
+		    #{kindType},
+			#{tipValue},
+			#{warnValue},
+			#{eliminateValue},
+			#{createTime},
+			#{updateTime}
+		)
+	</insert>
+	
+	<!--insertSellerEliminate批量插入  -->
+	<insert id="insertSellerEliminate"  parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+            insert into seller_eliminate (kind_type,tip_value,warn_value,eliminate_value,create_time)  
+         values   
+        <foreach collection="list" item="item" index="index" separator="," >  
+           (#{item.kindType},#{item.tipValue},#{item.warnValue},#{item.eliminateValue},now()) 
+        </foreach>  
+	</insert>
+	
+	<!--updateBatch批量更新  -->
+	<update id="updateBatch" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" separator=";">  
+      update seller_eliminate set tip_value = #{item.tipValue} , warn_value = #{item.warnValue} , eliminate_value = #{item.eliminateValue}, update_time=now() WHERE id = #{item.id}  
+    </foreach>  
+	</update>
+</mapper>

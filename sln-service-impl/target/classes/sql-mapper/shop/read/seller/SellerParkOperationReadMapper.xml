@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.seller.SellerParkOperationReadDao">
+	<resultMap id="SellerParkOperationResult" type="com.sln.entity.seller.SellerParkOperation">
+		<result property="id" column="id" />
+		<result property="sellerId" column="seller_id" />
+		<result property="parkId" column="park_id" />
+		<result property="operationId" column="operation_id" />
+		<result property="create_time" column="createTime" />
+		<result property="update_time" column="updateTime" />
+	</resultMap>
+
+	<select id="getSellerParkOperations"  resultMap="SellerParkOperationResult">
+		select id,seller_id,park_id,operation_id,create_time,update_time from seller_park_operation
+		where park_id=#{parkId} and operation_id=#{operationId}
+	</select>
+
+	<select id="getBySellerId" resultMap="SellerParkOperationResult">
+		select id,seller_id,park_id,operation_id,create_time,update_time from seller_park_operation
+		where seller_id=#{sellerId}
+	</select>
+
+	<delete id="deleteById">
+		DELETE FROM seller_park_operation where seller_id=#{sellerId}
+	</delete>
+
+	<insert id="batchSave" parameterType="java.util.List">
+		INSERT INTO  seller_park_operation (seller_id,park_id,operation_id,create_time,update_time)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.sellerId},#{item.parkId},#{item.operationId},now(),now())
+		</foreach>
+	</insert>
+
+
+
+
+</mapper>

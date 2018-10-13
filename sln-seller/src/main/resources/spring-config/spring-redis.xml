@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+	
+	<!-- 仅先配置单个redis使用 -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  
+    	<!-- 最大空闲数，数据库连接的最大空闲时间。超过空闲时间，数据库连接将被标记为不可用，然后被释放。设为0表示无限制 -->
+        <property name="maxIdle" value="1000" /> 
+        <!-- 连接池的最大数据库连接数。设为0表示无限制 --> 
+        <property name="maxActive" value="6000" />  
+        <!-- 最大建立连接等待时间。如果超过等待时间，则直接抛出JedisConnectionException。设为-1表示无限制。 -->
+        <property name="maxWait" value="1000" /> 
+        <!-- borrow一个jedis实例时，是否提前进行alidate操作 --> 
+        <property name="testOnBorrow" value="true" />  
+    </bean>  
+      
+    <!-- jedis pool 配置 --> 
+     
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool" >  
+	    <constructor-arg index="0" ref="jedisPoolConfig" />
+	    <constructor-arg index="1" value="${redis.url}" />  
+	    <constructor-arg index="2" value="${redis.port}" />  
+	    <constructor-arg index="3" value="${redis.timeout}" />  
+	    <constructor-arg index="4" value="${redis.requirepass}" />
+	</bean>
+ 	
+<!--
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">  
+	    <constructor-arg index="0" ref="jedisPoolConfig" />  
+	    <constructor-arg index="1" value="120.78.180.131" />  
+	    <constructor-arg index="2" value="6379" />  
+	    <constructor-arg index="3" value="6000" />  
+	    <constructor-arg index="4" value="SlnSln512" />
+	</bean>
+-->	
+	<bean id="redisUtil" class="com.sln.util.RedisUtil">
+		<property name="jedisPool" ref="jedisPool"></property>
+	</bean>
+	<bean id="redisDao" class="com.sln.dao.redis.impl.RedisDaoImpl">
+		<property name="redisUtil" ref="redisUtil"></property>
+	</bean>
+</beans>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.product.ProductRegisterWriteDao">
+	<resultMap id="ProductRegisterResult" type="com.sln.entity.product.ProductRegister">
+			<result property="id" column="id" />
+			<result property="productCode" column="product_code" />
+			<result property="productName" column="product_name" />
+			<result property="productAddress" column="product_address" />
+			<result property="phoneNumber" column="phone_number" />
+			<result property="staffId" column="staff_id" />
+			<result property="staffName" column="staff_name" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="productRegiStat" column="product_regi_stat" />
+			<result property="retroactionReason" column="retroaction_reason" />
+			<result property="memberId" column="member_id" />
+	</resultMap>
+	
+	<!-- 获取总记录条数getRegisterProductCount -->
+	<select id="getRegisterProductCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) from product_register 
+		<include refid="selectColumn"/>
+	</select>
+	
+	<select id="get" parameterType="java.lang.Integer" resultMap="ProductRegisterResult">
+		select
+		   *
+		from product_register
+		where id = #{productRegisterId}
+	</select>
+	
+	<!--查询列表  -->
+	<select id="getProductRegisterPageList" parameterType="java.util.Map" resultMap="ProductRegisterResult">
+		select 
+			* 
+		from product_register 
+		<include refid="selectColumn"/>
+		order by `id` desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<!--后面要添加一个查询条件的优化 -->
+	<sql id="selectColumn">
+        `productCode`,
+        `productName`,
+        `productAddress`,
+        `phoneNumber`,
+        `staffId`,
+        `staffName`,
+        `createTime`,
+        `update_time`,
+        `product_regi_stat`,
+        `retroaction_reason`,
+        
+    </sql>
+    <!-- 自定义获取列表 -->
+    <select id="getProductRegistert" parameterType="java.util.Map" resultMap="ProductRegisterResult">
+		select 
+			* 
+		from product_register 
+		<include refid="selectColumn"/>
+		order by `id` desc
+	</select>
+    
+	<update id="update" parameterType="com.sln.entity.product.ProductRegister">
+        update `product_register` 
+    	<set>
+			<if test="productCode != null">`product_code`= #{productCode},</if>
+			<if test="productName != null">`product_name`= #{productName},</if>
+			<if test="productAddress != null">`product_address`= #{productAddress},</if>
+			<if test="phoneNumber != null">`phone_number`= #{phoneNumber},</if>
+			<if test="staffId != null">`staff_id`= #{staffId},</if>
+			<if test="staffName != null">`staff_name`= #{staffName},</if>
+			<if test="productRegiStat != null">`product_regi_stat`= #{productRegiStat},</if>
+			<if test="retroactionReason != null">`retroaction_reason`= #{retroactionReason},</if>
+			`update_time`= now()
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<!--自定义更改状态为通过 -->
+	<update id="updateProductRegister" parameterType="java.lang.Integer">
+	update product_register
+	set product_regi_stat=2,update_time=NOW()
+	where id=#{id}
+	
+	</update>
+	
+	<!--自定义更该状态为驳回  -->      
+	<update id="updateProductStateByIdre" parameterType="java.util.Map">
+	update product_register
+	set product_regi_stat=3,update_time=NOW(),retroaction_reason=#{map.retroactionReason}
+	where id=#{map.id}
+	</update>
+	
+	<insert id="insert" parameterType="com.sln.entity.product.ProductRegister" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`product_register`
+		(
+			
+			`product_code`,
+			`product_name`,
+			`product_address`,
+			`phone_number`,
+			`staff_id`,
+			`staff_name`,
+			`create_time`,
+			`update_time`,
+			`product_regi_stat`,
+			`retroaction_reason`,
+			`member_id`
+			
+		)
+		values
+		(
+			
+			#{productCode},
+			#{productName},
+			#{productAddress},
+			#{phoneNumber},
+			#{staffId},
+			#{staffName},
+			#{createTime},
+			#{updateTime},
+			#{productRegiStat},
+		    #{retroactionReason},
+		    #{memberId}
+		)
+	</insert>
+	
+</mapper>

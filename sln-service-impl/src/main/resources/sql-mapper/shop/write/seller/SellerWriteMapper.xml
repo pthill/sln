@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.seller.SellerWriteDao">
+	<resultMap id="SellerResult" type="com.sln.entity.seller.Seller">
+			<result property="id" column="id" />
+			<result property="memberId" column="member_id" />
+			<result property="name" column="name" />
+			<result property="sellerName" column="seller_name" />
+			<result property="sellerLogo" column="seller_logo" />
+			<result property="sellerGrade" column="seller_grade" />
+			<result property="scoreService" column="score_service" />
+			<result property="scoreDeliverGoods" column="score_deliver_goods" />
+			<result property="scoreDescription" column="score_description" />
+			<result property="productNumber" column="product_number" />
+			<result property="collectionNumber" column="collection_number" />
+			<result property="createTime" column="create_time" />
+			<result property="saleMoney" column="sale_money" />
+			<result property="orderCount" column="order_count" />
+			<result property="orderCountOver" column="order_count_over" />
+			<result property="sellerKeyword" column="seller_keyword" />
+			<result property="sellerDes" column="seller_des" />
+			<result property="auditStatus" column="audit_status" />
+			<result property="storeSlide" column="store_slide" />
+		    <result property="businessState" column="business_state" />
+			<result property="reportCount" column="report_count" />
+			<result property="compainCount" column="compain_count" />
+			<result property="comparkMark" column="compark_mark" />
+			<result property="isContributing" column="is_contributing" />
+			<result property="subjectId" column="subject_id" />
+	</resultMap>
+	
+	<delete id="deleteByMemberId" parameterType="Integer">
+        delete from `seller` where `member_id` = #{memberId}
+    </delete>
+
+    <update id="auditSeller">
+        update `seller` 
+    	set `audit_status` = #{auditStatus}
+        where `member_id` = #{memberId}
+	</update>
+    
+	<delete id="deleteByMemberIds">
+        delete from `seller` 
+       	where `member_id` in 
+		<foreach collection="memberIds" item="item" index="index" open="(" separator="," close=")">  
+		  #{item}  
+		</foreach>  
+    </delete>
+	
+	<select id="getSellerByMemberId" parameterType="Integer" resultMap="SellerResult">
+		select
+			*
+		from `seller`
+		where `member_id` = #{memberId}
+		limit 1
+	</select>
+	
+	<select id="get" parameterType="Integer" resultMap="SellerResult">
+		select
+		   *
+		from `seller`
+		where `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="com.sln.entity.seller.Seller">
+        update `seller` 
+    	<set>
+			<!-- <if test="id != null">`id`= #{id},</if> -->
+			<if test="memberId != null">`member_id`= #{memberId},</if>
+			<if test="name != null">`name`= #{name},</if>
+			<if test="sellerName != null">`seller_name`= #{sellerName},</if>
+			<if test="sellerLogo != null">`seller_logo`= #{sellerLogo},</if>
+			<if test="sellerGrade != null">`seller_grade`= #{sellerGrade},</if>
+			<if test="scoreService != null">`score_service`= #{scoreService},</if>
+			<if test="scoreDeliverGoods != null">`score_deliver_goods`= #{scoreDeliverGoods},</if>
+			<if test="scoreDescription != null">`score_description`= #{scoreDescription},</if>
+			<if test="productNumber != null">`product_number`= #{productNumber},</if>
+			<if test="collectionNumber != null">`collection_number`= #{collectionNumber},</if>
+			<!-- <if test="createTime != null">`create_time`= #{createTime},</if> -->
+			<if test="saleMoney != null">`sale_money`= #{saleMoney},</if>
+			<if test="orderCount != null">`order_count`= #{orderCount},</if>
+			<if test="orderCountOver != null">`order_count_over`= #{orderCountOver},</if>
+			<if test="sellerKeyword != null">`seller_keyword`= #{sellerKeyword},</if>
+			<if test="sellerDes != null">`seller_des`= #{sellerDes},</if>
+			<if test="auditStatus != null">`audit_status`= #{auditStatus},</if>
+			<if test="storeSlide != null">`store_slide`= #{storeSlide},</if>
+			<if test="businessState != null">`business_state`= #{businessState},</if>
+			<if test="reportCount != null">`report_count`= #{reportCount},</if>
+			<if test="compainCount != null">`compain_count`= #{compainCount},</if>
+			<if test="comparkMark != null">`compark_mark`= #{comparkMark},</if>
+			<if test="isContributing != null">`is_contributing`= #{isContributing},</if>
+			<if test="subjectId != null">`subject_id`= #{subjectId}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="save" parameterType="com.sln.entity.seller.Seller" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into `seller`
+		(
+			`member_id`,
+			`name`,
+			`seller_name`,
+			`seller_logo`,
+			`seller_grade`,
+			`score_service`,
+			`score_deliver_goods`,
+			`score_description`,
+			`product_number`,
+			`collection_number`,
+			`create_time`,
+			`sale_money`,
+			`order_count`,
+			`order_count_over`,
+			`seller_keyword`,
+			`seller_des`,
+			`audit_status`,
+			`store_slide`,
+			`is_contributing`,
+			`subject_id`
+		)
+		values
+		(
+			#{memberId},
+			#{name},
+			#{sellerName},
+			#{sellerLogo},
+			#{sellerGrade},
+			#{scoreService},
+			#{scoreDeliverGoods},
+			#{scoreDescription},
+			#{productNumber},
+			#{collectionNumber},
+			now(),
+			#{saleMoney},
+			#{orderCount},
+			#{orderCountOver},
+			#{sellerKeyword},
+			#{sellerDes},
+			#{auditStatus},
+			#{storeSlide},
+			#{isContributing},
+			#{subjectId}
+		)
+	</insert>
+	
+	<!-- 冻结（auditStatus=3）、解冻商家（auditStatus=2） -->
+	<update id="freezeSeller">
+        update `seller` 
+    	set `audit_status` = #{auditStatus}
+        where `id` = #{id}
+	</update>
+	
+	<update id="updateIsSelf">
+        update `seller` 
+    	set `is_self` = #{status}
+        where `id` = #{id}
+	</update>
+	
+	<select id="getSellerByName" resultType="com.sln.entity.seller.Seller">
+		select * from seller
+		where `name` = #{name}
+	</select>
+
+	<select id="getSellerBySellerName" resultType="com.sln.entity.seller.Seller">
+		select * from seller
+		where `seller_name` = #{sellerName}
+	</select>
+
+</mapper>

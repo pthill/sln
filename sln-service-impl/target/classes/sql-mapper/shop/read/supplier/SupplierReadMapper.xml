@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.supplier.SupplierReadDao">
+	<resultMap id="supplierResult" type="com.sln.entity.supplier.Supplier">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="adress" column="adress" />
+		<result property="supplierType" column="supplier_type" />
+		<result property="contactsName" column="contacts_name" />
+		<result property="contactsTel" column="contacts_tel" />
+		<result property="bankOfAccounts" column="bank_of_accounts" />
+		<result property="benkAccount" column="benk_account" />
+		<result property="alipay" column="alipay" />
+		<result property="weChat" column="weChat" />
+		<result property="state" column="state" />
+		<result property="createTime" column="create_time" />
+		<result property="sellerId" column="seller_id" />
+		<result property="remark" column="remark"  />
+	</resultMap>
+
+	<select id="getSupplierList" parameterType="java.util.Map" resultMap="supplierResult">
+		SELECT 
+		  t.`id`,
+		  t.`name`,
+		  t.`adress`,
+		  t.`supplier_type`,
+		  t.`contacts_name`,
+		  t.`contacts_tel`,
+		  t.`bank_of_accounts`,
+		  t.`benk_account`,
+		  t.`alipay`,
+		  t.`weChat`,
+		  t.`state`,
+		  t.`create_time`,
+		  t.`seller_id`,
+		  t.`remark`
+		FROM
+		  supplier t
+		  where  seller_id=#{queryMap.q_sellerId}
+		 <include refid="whereConditions"/>
+        order by id desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getSupplierCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+		SELECT COUNT(1) FROM supplier t where  seller_id=#{queryMap.q_sellerId}
+		 <include refid="whereConditions"/>
+	</select>
+
+	<sql id="whereConditions">
+		<if test="queryMap.q_name != null and queryMap.q_name != ''">
+			and t.`name` like CONCAT('%',#{queryMap.q_name},'%')
+		</if>
+		<if test="queryMap.q_code != null and queryMap.q_code != ''">
+			and t.`id` like CONCAT('%',#{queryMap.q_code},'%')
+		</if>
+	</sql>
+	
+	<select id="getSupplierBySellerId" resultMap="supplierResult">
+		SELECT   t.`id`,
+	  t.`name`,
+	  t.`adress`,
+	  t.`supplier_type`,
+	  t.`contacts_name`,
+	  t.`contacts_tel`,
+	  t.`bank_of_accounts`,
+	  t.`benk_account`,
+	  t.`alipay`,
+	  t.`weChat`,
+	  t.`user_id`,
+	  t.`state`,
+	  t.`create_time`,
+	  t.`seller_id`,
+	  t.`remark`
+	FROM
+	  supplier t  WHERE t.`state` = 1 AND  t.`seller_id` = #{sellerId} ORDER BY t.`seller_id`
+	</select>
+
+
+	<select id="getById" resultMap="supplierResult" parameterType="java.lang.Integer">
+		SELECT
+		t.`id`,t.`name`,t.`adress`,t.`supplier_type`,t.`contacts_name`,t.`contacts_tel`,t.`bank_of_accounts`,t.`benk_account`,t.`alipay`,t.`weChat`,t.seller_id,t.`state`,t.`remark`
+		FROM supplier t WHERE t.id = #{id}
+	</select>
+	<select id="isSellerTypeExist" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM supplier t WHERE t.`supplier_type` = '0' and t.`seller_id`=#{sellerId}
+	</select>
+	<select id="isNameExist" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM supplier t WHERE t.`name` = #{name} and t.`seller_id`=#{sellerId}
+	</select>
+</mapper>

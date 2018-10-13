@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.member.MemberWelfareSendReadDao">
+    <resultMap id="MemberWelfareSendResult" type="com.sln.entity.member.MemberWelfareSend">
+        <result property="id" column="id" />
+        <result property="company" column="company" />
+        <result property="dept" column="dept" />
+        <result property="costName" column="cost_name" />
+        <result property="countPerson" column="count_person" />
+        <result property="createUser" column="create_user" />
+        <result property="createTime" column="create_time" />
+        <result property="sendTime" column="send_time" />
+        <result property="sendStatus" column="send_status" />
+        <result property="path" column="path" />
+        <result property="name" column="name" />
+        <result property="sellerId" column="seller_id" />
+        <result property="sellerName" column="sellerName" />
+    </resultMap>
+
+    <select id="get" parameterType="Integer" resultMap="MemberWelfareSendResult">
+        select id,company,dept,cost_name,count_person,create_user,create_time,send_time,send_status,path,seller_id
+        from `member_welfare_send`
+        where `id` = #{id}
+    </select>
+
+    <select id="page"  resultMap="MemberWelfareSendResult">
+        SELECT
+        m.id,
+        m.company,
+        m.dept,
+        m.cost_name,
+        m.count_person,
+        m.create_user,
+        m.create_time,
+        m.send_time,
+        m.send_status,
+        m.path,
+        s.`name`,
+        p.seller_name as sellerName
+        FROM
+        `member_welfare_send` m
+        left join system_admin s on s.id=m.create_user
+        left join seller p on p.id=m.seller_id
+        <include refid="getCondition"/>
+        order by m.`id` desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+
+    <select id="pageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select
+        count(*)
+        from `member_welfare_send` m
+        <include refid="getCondition"/>
+    </select>
+
+    <sql id="getCondition">
+        <where>
+            <if test="queryMap.q_company != null and queryMap.q_company !=''">
+                and m.company like CONCAT('%', #{queryMap.q_company}, '%')
+            </if>
+            <if test="queryMap.q_dept != null and queryMap.q_dept !=''">
+                and m.dept like CONCAT('%', #{queryMap.q_dept}, '%')
+            </if>
+            <if test="queryMap.q_sellerId != null and queryMap.q_sellerId !='' ">
+                <choose>
+                    <when test="queryMap.q_sellerId !='1'.toString()">
+                        and m.seller_id is not null
+                    </when>
+                    <otherwise>
+                        and m.seller_id is null
+                    </otherwise>
+                </choose>
+            </if>
+
+            <if test="queryMap.q_status != null and queryMap.q_status !=''">
+                and m.send_status = #{queryMap.q_status}
+            </if>
+            <if test="queryMap.q_createTime != null and queryMap.q_createTime !=''">
+                and m.create_time = #{queryMap.q_createTime}
+            </if>
+        </where>
+    </sql>
+</mapper>

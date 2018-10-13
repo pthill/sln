@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.product.ProductCateServiceSwitchWriteDao">
+	<resultMap id="ProductCateServiceSwitchResult" type="com.sln.entity.product.ProductCateServiceSwitch">
+			<result property="id" column="id" />
+			<result property="state" column="state" />
+			<result property="createId" column="create_id" />
+			<result property="createTime" column="create_time" />
+			<result property="updateId" column="update_id" />
+			<result property="updateTime" column="update_time" />
+			<result property="remark" column="remark" />
+	</resultMap>
+	
+	<update id="update" parameterType="com.sln.entity.product.ProductCateServiceSwitch">
+        update `product_cate_service_switch` 
+    	<set>
+			<if test="id != null">`id`= #{id},</if>
+			<if test="state != null">`state`= #{state},</if>
+			<if test="createId != null">`create_id`= #{createId},</if>
+			<if test="createTime != null">`create_time`= #{createTime},</if>
+			<if test="updateId != null">`update_id`= #{updateId},</if>
+			<if test="updateTime != null">`update_time`= #{updateTime},</if>
+			<if test="remark != null">`remark`= #{remark}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.sln.entity.product.ProductCateServiceSwitch" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`product_cate_service_switch`
+		(
+			`state`,
+			`create_id`,
+			`create_time`,
+			`update_id`,
+			`update_time`,
+			`remark`
+		)
+		values
+		(
+			#{state},
+			#{createId},
+			#{createTime},
+			#{updateId},
+			#{updateTime},
+			#{remark}
+		)
+	</insert>
+</mapper>

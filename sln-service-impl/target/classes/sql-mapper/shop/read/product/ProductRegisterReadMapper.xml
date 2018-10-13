@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.product.ProductRegisterReadDao">
+<resultMap id="ProductRegisterResult" type="com.sln.entity.product.ProductRegister">
+			<result property="id" column="id" />
+			<result property="productCode" column="product_code" />
+			<result property="productName" column="product_name" />
+			<result property="productAddress" column="product_address" />
+			<result property="phoneNumber" column="phone_number" />
+			<result property="staffId" column="staff_id" />
+			<result property="staffName" column="staff_name" />
+			<result property="createTime" column="create_time" />
+			<result property="updateTime" column="update_time" />
+			<result property="productRegiStat" column="product_regi_stat" />
+			<result property="retroactionReason" column="retroaction_reason" />
+			<result property="memberId" column="member_id" />
+	</resultMap>
+	
+   <select id="get" parameterType="java.lang.Integer" resultType="com.sln.entity.product.ProductRegister">
+		select
+		   <include refid="selectColumn"/>
+		from `product_register`
+		where `id` = #{id}
+	</select>
+	
+	<!--根据id获取会员id  -->
+	<select id="getMemberId" parameterType="java.lang.Integer" resultType="com.sln.entity.product.ProductRegister">
+	select member_id
+	from product_register
+	where id=#{id}
+	</select>
+	
+    <!-- 查询条件 -->
+	<sql id="selectColumn">
+		where 1=1
+		<trim  suffixOverrides="," >
+		<if test="queryMap.q_staffId != null and queryMap.q_staffId != ''" >
+			    and staff_id =  #{queryMap.q_staffId}
+			</if>
+		<if test="queryMap.q_staffName != null and queryMap.q_staffName != ''" >
+			    and staff_name =  #{queryMap.q_staffName}
+			</if>
+		<if test="queryMap.q_createTime != null and queryMap.q_createTime != ''" >
+			    and create_time =  #{queryMap.q_createTime}
+			</if>
+		<if test="queryMap.q_productRegiStat != null and queryMap.q_productRegiStat != ''" >
+			    and product_regi_stat =  #{queryMap.q_productRegiStat}
+			</if>
+		</trim>
+	</sql>
+	
+    <!-- 获取总记录条数getRegisterProductCount -->
+	<select id="getRegisterProductCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) from product_register 
+		
+	</select>
+	
+	   <!-- 自定义获取列表 -->
+    <select id="getProductRegistert"  resultType="com.sln.entity.product.ProductRegister">
+		select 
+		*
+		from product_register 
+		
+		order by `id` desc
+	</select>
+	
+	<!--根据会员id获取反馈信息商品名称，商品编号的集合 -->
+	<select id="getProductRegisterByCurrentId" parameterType="java.lang.Integer" resultMap="ProductRegisterResult">
+	    select 
+	    product_code,product_name,product_address,create_time,product_regi_stat,retroaction_reason
+		from product_register p
+		where member_id = #{currentId} 
+		order by p.create_time desc
+		
+	</select>
+	
+	<!--查询列表  -->
+	<select id="getProductRegisterPageList" parameterType="java.util.Map" resultType="com.sln.entity.product.ProductRegister">
+		select 
+		*
+		from product_register 
+		<include refid="selectColumn"/>
+		order by id desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+</mapper>

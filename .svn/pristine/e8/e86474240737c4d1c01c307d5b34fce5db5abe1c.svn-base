@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <name>sln</name>
+    <url>http://maven.apache.org</url>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sln</groupId>
+    <artifactId>sln</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>sln-parent</module>
+        <module>sln-core</module>
+        <module>sln-service</module>
+        <module>sln-service-impl</module>
+        <module>sln-front</module>
+        <module>sln-h5</module>
+        <module>sln-admin</module>
+        <module>sln-seller</module>
+    </modules>
+    
+    <!-- 项目发布 -->
+    <distributionManagement>    
+    	<repository>    
+        	<id>nexus-releases</id>    
+        	<name>Nexus Release Repository</name>    
+        	<url>http://114.119.7.147:8081/repository/maven-releases/</url>    
+  		</repository>    
+        <snapshotRepository>    
+        	<id>nexus-snapshots</id>    
+        	<name>Nexus Snapshot Repository</name>    
+        	<url>http://114.119.7.147:8081/repository/maven-snapshots/</url>    
+   		 </snapshotRepository>    
+	</distributionManagement>
+</project>

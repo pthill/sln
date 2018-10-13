@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.message.MessageWriteDao">
+	<resultMap id="MessageResult" type="com.sln.entity.message.Message">
+			<result property="id" column="id" />
+			<result property="title" column="title" />
+			<result property="content" column="content" />
+			<result property="message_code" column="messageCode" />
+			<result property="state" column="state" />
+			<result property="messageTypeId" column="message_type_id" />
+			<result property="sendId" column="send_id" />
+			<result property="sendType" column="send_type" />
+			<result property="isMessageTemplate" column="is_message_template" />
+			<result property="createTime" column="create_time" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="MessageResult">
+		select
+		   *
+		from `message`
+		where `id` = #{id}
+	</select>
+	
+	<select id="getMessageByMessageCode" parameterType="String" resultMap="MessageResult">
+		select
+		   *
+		from `message`
+		where `message_code` = #{messageCode}
+	</select>
+	
+	<update id="update" parameterType="com.sln.entity.message.Message">
+        update `message` 
+    	<set>
+			<if test="title != null and '' != title">`title`= #{title},</if>
+			<if test="content != null and '' != content">`content`= #{content},</if>
+			<if test="state != null">`state`= #{state},</if>
+			<if test="messageTypeId != null">`message_type_id` = #{messageTypeId},</if>
+			<if test="sendId != null">`send_id`= #{sendId},</if>
+			<if test="sendType != null">`send_type`= #{sendType}</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="com.sln.entity.message.Message" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`message`
+		(
+			`title`,
+			`content`,
+			`message_code`,
+			`state`,
+			`message_type_id`,
+			`send_id`,
+			`send_type`,
+			`is_message_template`,
+			`create_time`
+		)
+		values
+		(
+			#{title},
+			#{content},
+			#{messageCode},
+			#{state},
+			#{messageTypeId},
+			#{sendId},
+			#{sendType},
+			#{isMessageTemplate},
+			now()
+		)
+	</insert>
+	
+	<!-- 删除记录 -->
+	<delete id="delete">
+		delete from `message`  where `id` = #{id}
+	</delete>
+	
+	<select id="count" resultType="java.lang.Integer">
+        select count(1) from `message` m
+        LEFT JOIN `message_type` mt ON m.`message_type_id` = mt.`id`
+        <include refid="whereConditions"/>
+    </select>
+	
+	<select id="page" resultType="com.sln.entity.message.Message">
+        select
+        	m.*,
+        	mt.type_name		AS	"typeName",
+        	mt.reception_type	AS	"receptionType",
+        	s.name				AS	"createName"
+        from `message` m
+        LEFT JOIN `message_type` mt ON m.`message_type_id` = mt.`id`
+        LEFT JOIN `system_admin` s ON s.`id` = m.`send_id`
+        <include refid="whereConditions"/>
+        order by m.id desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+    <sql id="whereConditions">
+        <where>
+        	<if test="param1 != null">
+        		<if test="param1.q_title != null and '' != param1.q_title">
+	               and title like concat(concat("%",#{param1.q_title}),"%")
+	            </if>
+	            <if test="param1.q_state != null and '' != param1.q_state">
+	               and m.state = #{param1.q_state}
+	            </if>
+	            <if test="param1.q_messageTypeId != null and '' != param1.q_messageTypeId">
+	               and message_type_id = #{param1.q_messageTypeId}
+	            </if>
+	            <if test="param1.q_sendType != null and '' != param1.q_sendType">
+	               and send_type = #{param1.q_sendType}
+	            </if>
+	            <if test="param1.q_isMessageTemplate != null and '' != param1.q_isMessageTemplate">
+	               and is_message_template = #{param1.q_isMessageTemplate}
+	            </if>
+	            <if test="param1.q_receptionType != null and '' != param1.q_receptionType">
+	            	and mt.`reception_type` = #{param1.q_receptionType}
+	            </if>
+	            <if test="param1.q_isRead != null">
+	            	and mt.`is_read` = #{param1.q_isRead}
+	            </if>
+        	</if>
+        </where>
+    </sql>
+    
+</mapper>

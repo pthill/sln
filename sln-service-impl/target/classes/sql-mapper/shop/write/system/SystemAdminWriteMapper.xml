@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.system.SystemAdminWriteDao">
+	<resultMap id="SystemAdminResult" type="com.sln.entity.system.SystemAdmin">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="password" column="password" />
+			<result property="roleId" column="role_id" />
+			<result property="createTime" column="create_time" />
+			<result property="createUser" column="create_user" />
+			<result property="tel" column="tel" />
+			<result property="status" column="status" />
+			<result property="operationId" column="operation_id" />
+			<result property="updateTime" column="update_time" />
+		    <result property="parkId" column="park_id" />
+
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="SystemAdminResult">
+		select
+		   id,name,password,role_id,create_time,create_user,tel,status,operation_id,update_time,park_id
+		from `system_admin`
+		where `id` = #{id}
+	</select>
+	
+	<select id="getByNamePwd" parameterType="java.lang.String" resultMap="SystemAdminResult">
+		select
+		id,name,password,role_id,create_time,create_user,tel,status,operation_id,update_time,park_id
+		from `system_admin`
+		where `name` = #{name} and password = #{password}
+		and `status`=1
+		limit 1
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) from `system_admin` t1
+		<include refid="whereConditions" />
+	</select>
+	
+	<delete id="del">
+        delete from `system_admin` where `id` = #{id}
+	</delete>
+	
+	<select id="page"  parameterType="java.util.Map" resultType="com.sln.entity.system.SystemAdmin">
+		select id,name,password,role_id,create_time,create_user,tel,status,operation_id,update_time,park_id
+		from `system_admin` t1
+		<include refid="whereConditions" />
+		order by id
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<select id="list" resultType="com.sln.entity.system.SystemAdmin">
+		select
+		id,name,password,role_id,create_time,create_user,tel,status,operation_id,update_time,park_id
+		from `system_admin` t1
+		order by id
+	</select>
+	
+	<!-- 查询条件 -->
+	<sql id="whereConditions">
+		<where>
+			<if test="queryMap.q_name != null and queryMap.q_name !=''"  > and `name` like CONCAT('%',#{queryMap.q_name},'%')</if>
+			<if test="queryMap.q_status != null and queryMap.q_status !=''"  > and `status`= #{queryMap.q_status}</if>
+			<if test="queryMap.q_parkId != null and queryMap.q_parkId !=''"  > and `park_id`= #{queryMap.q_parkId}</if>
+			<if test="queryMap.q_operationId != null and queryMap.q_operationId !=''"  > and `operation_id`= #{queryMap.q_operationId}</if>
+		</where>
+	</sql>
+	
+	<update id="update" parameterType="com.sln.entity.system.SystemAdmin">
+        update `system_admin` 
+    	<set>
+			<if test="name != null">`name`= #{name},</if>
+			<if test="password != null and password !=''">`password`= #{password},</if>
+			<if test="roleId != null">`role_id`= #{roleId},</if>
+			<if test="tel != null">`tel`= #{tel},</if>
+			<if test="status != null">`status`= #{status},</if>
+			<if test="operationId != null">`operation_id`= #{operationId},</if>
+			<if test="parkId != null">`park_id`= #{parkId},</if>
+			`update_time`=now()
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<insert id="save" parameterType="com.sln.entity.system.SystemAdmin" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into 
+		`system_admin`
+		(
+			`name`,
+			`password`,
+			`role_id`,
+			`create_time`,
+			`create_user`,
+			`tel`,
+			`status`,
+			`operation_id`,
+			`park_id`,
+			`update_time`
+		)
+		values
+		(
+			#{name},
+			#{password},
+			#{roleId},
+			#{createTime},
+			#{createUser},
+			#{tel},
+			#{status},
+			#{operationId},
+			#{parkId},
+            now()
+		)
+	</insert>
+	
+	<select id="getCountByRoleId" resultType="java.lang.Integer">
+		select count(1) from `system_admin` where `role_id` = #{roleId}
+	</select>
+	
+</mapper>

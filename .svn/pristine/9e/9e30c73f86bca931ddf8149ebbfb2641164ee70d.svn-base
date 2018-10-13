@@ -1,0 +1,230 @@
+.bg-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0
+}
+
+.bg-img img {
+    width: 100%;
+    height: 100%
+}
+.btn{
+    border-radius: 0;
+}
+.header-container{
+	position: relative;
+	width: 100%;
+	height: 88px;
+	line-height: 88px;
+	background-color: #fff;
+    z-index: 1;
+}
+.header-container .logo img {
+    height: 60px;
+    vertical-align: middle;
+}
+.header-container .logo span{
+	font-size: 26px;
+	line-height: 60px;
+}
+.main-container {
+    position: relative;
+    height: 619px;
+    z-index: 1;
+}
+.main-container .container{
+	position: relative;
+	height: 100%;
+}
+.main-container .return-btn {
+    text-align: right
+}
+
+.main-container .return-btn a {
+    display: inline-block;
+    width: 150px;
+    padding: 5px 0;
+    text-align: center;
+    background-color: #fff
+}
+
+.main-container .return-btn a:hover {
+    color: #fff;
+    background-color: #ec6c00
+}
+.main-container .staff-login {
+    padding: 20px 35px 30px 35px;
+    font-size: 20px;
+}
+
+.main-container .login-wrap {
+	position: absolute;
+	right: 0;
+	top: 50%;
+    width: 421px;
+    margin-top: -242px;
+    border: 1px solid #e5e5e5;
+    background-color: #fff;
+    z-index: 1;
+}
+.main-container .login-wrap ul {
+    margin: 0
+}
+
+.main-container .login-wrap ul li {
+    color: #777;
+    height: 46px;
+    line-height: 46px;
+    text-align: center;
+    font-size: 14px;
+    background-color: #fceadc;
+}
+.main-container .login-wrap ul li img{
+    width: 22px;
+    vertical-align: middle;
+}
+.main-container .login-wrap ul li.active {
+    background-color: #fff
+}
+
+.main-container .login-wrap .put-wrap {
+    padding: 0 35px
+}
+.main-container .login-wrap .put-wrap .QRcode{
+	position: relative;
+}
+.main-container .login-wrap .put-wrap .QRcode a{
+	position: absolute;
+	right: 0;
+	top: 0;
+	line-height: 40px;
+	padding-right: 10px;
+}
+.main-container .login-wrap .put-wrap .QRcode a img{
+	width: 90px;
+	vertical-align: middle;
+}
+.main-container .login-wrap .err-tip {
+    font-size: 14px;
+}
+
+.main-container .login-wrap .err-tip em {
+    display: inline-block;
+    vertical-align: middle;
+    width: 15px;
+    height: 15px;
+    background: url(../images/login/tips.png) left center no-repeat;
+    background-size: 15px
+}
+
+.main-container .login-wrap .err-tip span {
+    color: #ec6c00;
+    vertical-align: middle
+}
+.main-container .login-wrap .put-wrap .form-group{
+    position: relative;
+    margin-bottom: 20px;
+}
+.main-container .login-wrap .put-wrap .forget{
+    margin-bottom: 10px;
+}
+.main-container .login-wrap .put-wrap .forget .checkbox{
+    margin-bottom: 0;
+}
+.main-container .login-wrap .put-wrap .form-group label{
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    width: 40px;
+    height: 100%;
+    background-image: url(../images/login/user.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    z-index: 10;
+}
+.main-container .login-wrap .put-wrap .pass label{
+    background-image: url(../images/login/pass.png);
+}
+.main-container .login-wrap .put-wrap .QRcode label{
+    background-image: url(../images/login/code.png);
+}
+.main-container .login-wrap .put-wrap .form-group .form-control {
+    height: 50px;
+    padding-left: 50px;
+    box-shadow: none;
+    border-radius: 0;
+}
+.form-control:focus{
+    border-color: #ddd;
+}
+.main-container .login-wrap .put-wrap .form-group .form-control.focus {
+    border-color: #ec6c00
+}
+
+.main-container .login-wrap .put-wrap .form-group .btn {
+    width: 100%;
+    padding: 10px 0;
+    color: #fff;
+    background-color: #ec6c00
+}
+
+.main-container .login-wrap .put-wrap .form-group .code-img {
+    padding-left: 0
+}
+
+.main-container .login-wrap .put-wrap .form-group .code-img img {
+    border-radius: 4px
+}
+
+.main-container .login-wrap .put-wrap .form-group .code-img a {
+    color: #fff;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 4px;
+    background-color: #ec6c00
+}
+.main-container .login-wrap .link{
+    padding: 0 15px;
+    background-color: #f9f9f9;
+}
+.main-container .login-wrap .link a{
+	position: relative;
+	line-height: 24px;
+    padding: 15px;
+}
+.main-container .login-wrap .link a.wechat:before{
+	content:"";
+	position: absolute;
+	left: -1px;
+	top: 50%;
+	width: 0;
+	height: 18px;
+	margin-top: -9px;
+	border-left: 2px solid #e1e1e1;
+}
+.main-container .login-wrap .link a.register{
+	color: #ed6f05;
+	font-size: 15px;
+}
+.main-container .login-wrap .link img {
+  width: 24px;
+  vertical-align: middle
+}
+.footer-container {
+	width: 100%;
+    padding: 15px 0;w
+    font-size: 12px;
+	text-align: center
+}
+.footer-fixed{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}

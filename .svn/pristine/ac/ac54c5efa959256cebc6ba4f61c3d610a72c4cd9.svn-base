@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.member.MemberWelfareSendDetailReadDao">
+    <resultMap id="MemberWelfareSendDetailResult" type="com.sln.entity.member.MemberWelfareSendDetail">
+        <result property="id" column="id" />
+        <result property="welfareId" column="welfare_id" />
+        <result property="staffNo" column="staff_no" />
+        <result property="name" column="name" />
+        <result property="tel" column="tel" />
+        <result property="money" column="money" />
+        <result property="birthday" column="birthday" />
+        <result property="startTime" column="start_time" />
+        <result property="endTime" column="end_time" />
+        <result property="sellerName" column="seller_name" />
+    </resultMap>
+
+    <select id="page" resultMap="MemberWelfareSendDetailResult">
+        select
+        id,welfare_id,staff_no,name,tel,money,birthday,start_time,end_time,seller_name
+        from `member_welfare_send_detail`
+        where welfare_id=#{WelfareSendId}
+        order by `id` desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+
+
+    <select id="pageCount" resultType="java.lang.Integer">
+       select count(1)
+		from `member_welfare_send_detail` where welfare_id=#{WelfareSendId}
+    </select>
+
+</mapper>

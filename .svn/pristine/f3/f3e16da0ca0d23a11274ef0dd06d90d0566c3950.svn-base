@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.member.MemberReadDao">
+	<resultMap id="MemberResult" type="com.sln.entity.member.Member">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="password" column="password" />
+			<result property="grade" column="grade" />
+			<result property="gradeValue" column="grade_value" />
+			<result property="integral" column="integral" />
+			<result property="registerTime" column="register_time" />
+			<result property="lastLoginTime" column="last_login_time" />
+			<result property="lastLoginIp" column="last_login_ip" />
+			<result property="loginNumber" column="login_number" />
+			<result property="lastAddressId" column="last_address_id" />
+			<result property="lastPaymentCode" column="last_payment_code" />
+			<result property="gender" column="gender" />
+			<result property="birthday" column="birthday" />
+			<result property="email" column="email" />
+			<result property="qq" column="qq" />
+			<result property="mobile" column="mobile" />
+			<result property="phone" column="phone" />
+			<result property="pwdErrCount" column="pwd_err_count" />
+			<result property="source" column="source" />
+			<result property="balance" column="balance" />
+			<result property="balancePwd" column="balance_pwd" />
+			<result property="isEmailVerify" column="is_email_verify" />
+			<result property="isSmsVerify" column="is_sms_verify" />
+			<result property="smsVerifyCode" column="sms_verify_code" />
+			<result property="emailVerifyCode" column="email_verify_code" />
+			<result property="canReceiveSms" column="can_receive_sms" />
+			<result property="canReceiveEmail" column="can_receive_email" />
+			<result property="status" column="status" />
+			<result property="updateTime" column="update_time" />
+			<result property="isStaff" column="is_staff" />
+			<result property="staffNo" column="staff_no" />
+	</resultMap>
+	
+	<select id="isMobExists" parameterType="String" resultType="Integer">
+		SELECT
+			count(1)
+		FROM
+			`member`
+		WHERE
+			mobile = #{mobile};
+	</select>
+	
+	<sql id="getCondition">
+        <where>
+            <if test="queryMap.q_name != null and queryMap.q_name !=''">
+                and name like CONCAT('%', #{queryMap.q_name}, '%')
+            </if>
+            <if test="queryMap.q_password != null and queryMap.q_password !=''">
+                and password = #{queryMap.q_password}
+            </if>
+            <if test="queryMap.q_grade != null and queryMap.q_grade !=''">
+                and grade = #{queryMap.q_grade}
+            </if>
+            <if test="queryMap.q_email != null and queryMap.q_email !=''">
+                and email like CONCAT('%', #{queryMap.q_email}, '%')
+            </if>
+            <if test="queryMap.q_mobile != null and queryMap.q_mobile !=''">
+                and mobile = #{queryMap.q_mobile}
+            </if>
+            <if test="queryMap.q_source != null and queryMap.q_source !=''">
+                and source = #{queryMap.q_source}
+            </if>
+            <if test="queryMap.q_status != null and queryMap.q_status !=''">
+                and status = #{queryMap.q_status}
+            </if>
+             <if test="queryMap.q_balancePwd != null and queryMap.q_balancePwd !=''">
+                and balance_pwd = #{queryMap.q_balancePwd}
+            </if>
+        </where>
+    </sql>
+    
+	<select id="get" parameterType="Integer" resultMap="MemberResult">
+		select
+		   *
+		from `member`
+		where `id` = #{id}
+	</select>
+	<!-- 根据手机号码获取用户数据 -->
+	<select id="getByMobile" resultMap="MemberResult">
+		select `id`, `name`, `password`,`grade`,`grade_value`,`integral`,
+  `register_time`,`last_login_time`,`last_login_ip`,`login_number`,`last_address_id`,
+  `last_payment_code`,`gender`,`birthday`,`email`,`qq`,`mobile`,
+  `phone`,`pwd_err_count`, `source`,`balance`,
+  `balance_pwd`,`is_email_verify`,`is_sms_verify`,`sms_verify_code`, `email_verify_code`,
+  `can_receive_sms`,`can_receive_email`, `status`,`is_staff`,`staff_no` from `member` where mobile = #{mobile}
+	</select>
+	
+	<select id="getMembersCount" parameterType="java.util.Map" resultType="Integer">
+		select
+		   count(*)
+		from `member`
+		<include refid="getCondition"/>
+	</select>
+	
+	<select id="getMembers" parameterType="java.util.Map" resultMap="MemberResult">
+		select
+		   *
+		from `member`
+		<include refid="getCondition"/>
+		order by `id` desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<!--获取会员账号和注册时间sgetMembersNameAndRegisterTime  -->
+	<select id="getMembersNameAndRegisterTime" parameterType="java.util.Map" resultMap="MemberResult">
+	select 
+	     id,name,register_time
+	 from member
+	<include refid="getCondition"/>
+		order by `id` desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	
+	<select id="getMembersByDay" resultMap="MemberResult">
+		select
+		   *
+		from `member`
+		where `register_time` like CONCAT('%', #{day}, '%')
+		and `register_time` &lt; date_sub(now(),interval 364 day)
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	
+</mapper>

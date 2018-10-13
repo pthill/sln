@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.message.MessageRecordWriteDao">
+	<resultMap id="MessageRecordResult" type="com.sln.entity.message.MessageRecord">
+			<result property="id" column="id" />
+			<result property="messageId" column="message_id" />
+			<result property="receptionId" column="reception_id" />
+			<result property="content" column="content" />
+			<result property="createTime" column="create_time" />
+			<result property="isRead" column="is_read" />
+			<result property="isDel" column="is_del" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="MessageRecordResult">
+		select
+		   *
+		from `message_record`
+		where `id` = #{id}
+	</select>
+	
+	<select id="count" resultType="java.lang.Integer">
+        select count(1) from `message_record` mr
+        LEFT JOIN `message` m ON m.id = mr.message_id
+        LEFT JOIN `message_type` mt ON mt.id = m.message_type_id
+        <include refid="whereConditions"/>
+    </select>
+	
+	<select id="page" resultType="com.sln.entity.message.MessageRecord">
+		 select
+        	mr.*,
+        	m.title				AS	"title",
+        	mt.id				AS	"messageTypeId",
+        	mt.type_name		AS	"typeName",
+        	mt.reception_type 	AS	"receptionType"
+        	
+        from `message_record`  mr
+        LEFT JOIN `message` m ON m.id = mr.message_id
+        LEFT JOIN `message_type` mt ON mt.id = m.message_type_id
+        <include refid="whereConditions"/>
+        order by mr.id desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<sql id="whereConditions">
+        <where>
+        	<if test="param1 != null">
+        		<if test="param1.q_receptionId != null">
+        			AND mr.reception_id = #{param1.q_receptionId}
+        		</if>
+        		<if test="param1.q_receptionType != null">
+        			AND mt.reception_type = #{param1.q_receptionType}
+        		</if>
+        		<if test="param1.q_messageTypeId != null">
+        			AND mt.id = #{param1.q_messageTypeId}
+        		</if>
+        		<if test="param1.q_isDel != null">
+        			AND mr.is_del = #{param1.q_isDel}
+        		</if>
+        		<if test="param1.q_isRead != null">
+        			AND mr.is_read = #{param1.q_isRead}
+        		</if>
+        		<if test="param1.q_title != null">
+        			AND  m.title LIKE CONCAT(CONCAT('%', #{param1.q_title}), '%')
+        		</if>
+        		<if test="param1.q_isMessageTemplate != null">
+        			AND m.is_message_template = #{param1.q_isMessageTemplate}
+        		</if>
+        		<if test="param1.q_typeState != null">
+        			AND mt.state = #{param1.q_typeState}
+        		</if>
+        	</if>
+        </where>
+    </sql>
+    
+    
+	<insert id="insert" parameterType="com.sln.entity.message.MessageRecord" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO 
+		`message_record`
+		(
+		  	`message_id`,
+		  	`reception_id`,
+		  	`content`,
+		  	`create_time`
+		)
+		values
+		(
+			#{messageId},
+			#{receptionId},
+			#{content},
+			now()
+		)
+	</insert>
+	
+	<update id="update" parameterType="com.sln.entity.message.MessageRecord">
+        update `message_record` 
+    	<set>
+			<if test="isRead != null and '' != isRead">`is_read`= #{isRead},</if>
+			<if test="isDel != null and '' != isDel">`is_del`= #{isDel},</if>
+	    </set>
+        where `id` = #{id}
+	</update>
+	
+	<!-- 批量发送短信 -->
+	<update id="batchSendMessage" parameterType="java.util.List">
+		  INSERT INTO 
+		  `message_record`
+		  (
+		  	`message_id`,
+		  	`reception_id`,
+		  	`content`,
+		  	`create_time`
+		  )
+		  VALUES
+		  <foreach collection="list" item="item" index="index" open="" close="" separator=",">
+		  (
+		  	#{item.messageId},
+		  	#{item.receptionId},
+		  	#{item.content},
+		  	now()
+		  )
+		  </foreach>
+	</update>
+	
+	<select id="getUnreadNumByMessageTypeId" resultType="java.lang.Integer" >
+		SELECT COUNT(1) FROM message_record  mr
+		LEFT JOIN message m ON m.id = mr.message_id
+		LEFT JOIN message_type mt ON mt.id = m.message_type_id
+		<where>
+			is_read = 0 AND mr.is_del = 0  AND  mt.state = 0
+			<if test="memberId != null and memberId != 0">
+				AND reception_id = #{memberId}
+			</if>
+			<if test="null != messageTypeId">
+				AND m.message_type_id = #{messageTypeId}
+			</if>
+		</where>
+	</select>
+	
+</mapper>

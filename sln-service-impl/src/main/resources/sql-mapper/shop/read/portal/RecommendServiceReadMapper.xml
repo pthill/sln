@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.portal.RecommendServiceReadDao">
+    <resultMap id="RecommendServiceResult" type="com.sln.entity.portal.RecommendService">
+        <result property="id" column="id" />
+        <result property="serviceId" column="service_id" />
+        <result property="order" column="order" />
+        <result property="state" column="state" />
+        <result property="img" column="img" />
+        <result property="parkId" column="park_id"/>
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="fwl" column="fwl"/>
+        <result property="fwx" column="fwx" />
+    </resultMap>
+
+    <select id="get" parameterType="Integer" resultMap="RecommendServiceResult">
+            select
+            r.*,s.pid as fwx
+           from `recommend_service` r
+           left join portal_service s on s.id=service_id
+           where r.`id` = #{id}
+    </select>
+
+    <select id="getByParkId" parameterType="Integer" resultMap="RecommendServiceResult">
+        select s.*,p.pid,p.service_name as fwx from recommend_service s
+        left JOIN portal_service p on s.service_id=p.id
+        where  s.`park_id` = #{parkId} and s.state=1
+    </select>
+
+    <select id="getPage"  resultMap="RecommendServiceResult">
+        SELECT
+        r.*,s.service_name as fwx,p.service_name as fwl
+        FROM
+        recommend_service r
+        LEFT JOIN portal_service s on s.id=r.service_id
+        left join portal_service p on p.id=s.pid
+        <include refid="getCondition"/>
+        order by r.order desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+
+    <select id="getPageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1)
+        from recommend_service r
+        LEFT JOIN portal_service s on s.id=r.service_id
+        left join portal_service p on p.id=s.pid
+        <include refid="getCondition"/>
+    </select>
+
+    <select id="isServiceExist"  resultType="java.lang.Integer">
+        select count(1)
+        from `recommend_service`
+        where `service_id` = #{serviceId}
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+    <select id="isOrderExist"  resultType="java.lang.Integer">
+        select count(1)
+        from `recommend_service`
+        where `order` = #{order}
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+    <sql id="getCondition">
+        <where>
+            <if test="queryMap.q_id != null and queryMap.q_id !=''">
+                and s.id= #{queryMap.q_id}
+            </if>
+            <if test="queryMap.q_pid != null and queryMap.q_pid !=''">
+                and s.pid= #{queryMap.q_pid}
+            </if>
+        </where>
+    </sql>
+
+
+</mapper>

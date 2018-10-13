@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.operate.OperationManagerReadDao">
+	<resultMap id="ManagerResult" type="com.sln.entity.operate.OperationManager">
+			<result property="id" column="id" />
+			<result property="code" column="code" />
+		    <result property="name" column="name" />
+		    <result property="status" column="status" />
+		    <result property="address" column="address" />
+		    <result property="parkId" column="park_id" />
+		    <result property="description" column="description" />
+		    <result property="company" column="company" />
+		    <result property="createTime" column="create_time" />
+		    <result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="ManagerResult">
+		select
+		   *
+		from `operation`
+		where `id` = #{id}
+	</select>
+
+	<select id="getByNameAndParkId" resultMap="ManagerResult">
+		select
+		*
+		from `operation`
+		where `park_id` = #{parkId} and name=#{name}
+	</select>
+
+	<sql id="getCondition">
+		<where>
+			<if test="queryMap.q_name != null and queryMap.q_name !=''">
+				and name = #{queryMap.q_name}
+			</if>
+			<if test="queryMap.q_code != null and queryMap.q_code !=''">
+				and code like CONCAT('%',#{queryMap.q_code},'%')
+			</if>
+			<if test="queryMap.q_status != null and queryMap.q_status !=''">
+				and status = #{queryMap.q_status}
+			</if>
+		</where>
+	</sql>
+
+	<select id="getManagersCount" parameterType="java.util.Map" resultType="Integer">
+		select
+		count(*)
+		from `operation`
+		<include refid="getCondition"/>
+	</select>
+
+	<select id="getManagers" parameterType="java.util.Map" resultMap="ManagerResult">
+		select
+		*
+		from `operation`
+		<include refid="getCondition"/>
+		order by `park_id` desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="isCodeExists" parameterType="String" resultType="Integer">
+		SELECT
+			count(1)
+		FROM
+			`operation`
+		WHERE
+			code = #{code}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+	</select>
+
+	<select id="getManagersByParkId" resultMap="ManagerResult">
+		select
+		*
+		from `operation`
+		where park_id = #{parkId}
+		order by `id` desc
+	</select>
+
+	<select id="isNameExists" parameterType="String" resultType="Integer">
+		SELECT
+		count(1)
+		FROM
+		`operation`
+		WHERE
+		name = #{name} and park_id = #{parkId}
+		<if test="id != null">
+			and id != #{id}
+		</if>
+	</select>
+</mapper>

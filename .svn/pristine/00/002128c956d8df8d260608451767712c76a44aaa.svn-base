@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.seller.SellerReadDao">
+	<resultMap id="SellerResult" type="com.sln.entity.seller.Seller">
+			<result property="id" column="id" />
+			<result property="memberId" column="member_id" />
+			<result property="name" column="name" />
+			<result property="sellerName" column="seller_name" />
+			<result property="sellerLogo" column="seller_logo" />
+			<result property="sellerGrade" column="seller_grade" />
+			<result property="scoreService" column="score_service" />
+			<result property="scoreDeliverGoods" column="score_deliver_goods" />
+			<result property="scoreDescription" column="score_description" />
+			<result property="productNumber" column="product_number" />
+			<result property="collectionNumber" column="collection_number" />
+			<result property="createTime" column="create_time" />
+			<result property="saleMoney" column="sale_money" />
+			<result property="orderCount" column="order_count" />
+			<result property="orderCountOver" column="order_count_over" />
+			<result property="sellerKeyword" column="seller_keyword" />
+			<result property="sellerDes" column="seller_des" />
+			<result property="auditStatus" column="audit_status" />
+			<result property="storeSlide" column="store_slide" />
+		    <result property="businessState" column="business_state" />
+			<result property="reportCount" column="report_count" />
+			<result property="compainCount" column="compain_count" />
+			<result property="comparkMark" column="compark_mark" />
+			<result property="isContributing" column="is_contributing" />
+			<result property="subjectId" column="subject_id" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="SellerResult">
+		select
+		   *
+		from `seller`
+		where `id` = #{id}
+	</select>
+	
+	<select id="getSettlementSeller" resultMap="SellerResult">
+		select
+		   *
+		from `seller`
+		where `audit_status` > 1
+	</select>
+	
+	<select id="getByMemberId" parameterType="Integer" resultMap="SellerResult">
+		select
+		   *
+		from `seller`
+		where `member_id` = #{memberId}
+	</select>
+	
+	<select id="getSellersCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) from seller
+		<include refid="getSellersCondition" />
+	</select>
+	<!-- 根据商家名称查询 -->
+	<select id="getSellerByName" resultMap="SellerResult">
+		select id from seller t where t.seller_name =#{sellerName}
+	</select>
+	
+	<!-- 商户投诉登记获取商家id -->
+	<select id="getSellerIdByName" resultType="java.lang.Integer">
+	select id from seller t where t.seller_name =#{complainSeller}
+	</select>
+	
+	<select id="getSellers" resultType="com.sln.entity.seller.Seller">
+		select *,
+		(SELECT seller_name FROM seller s WHERE s.id = a.subject_id) AS subjectName
+		from seller a
+		<include refid="getSellersCondition" />
+		order by id desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<!--获取商家名与账户getSellerNameAndName-->
+	<select id="getSellerNameAndName" resultType="com.sln.entity.seller.Seller">
+	select seller_name,name,id
+	   from seller
+	   <where>
+	   <include refid="selectMyOption" />
+	   and audit_status=2
+	   </where>
+	   order by id desc
+	   	<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	<!--我的查询商家订单量，等级，综合评分等 -->
+	<select id="getSellEliminate" resultType="com.sln.entity.seller.Seller">
+	select seller_name,seller_grade,order_count_over,score_service,score_deliver_goods,score_description,compain_count,business_state,report_count,compark_mark
+	 from seller 
+	 <where>
+		<include refid="selectMyOption" />
+	    and audit_status=2
+	 </where>
+		order by id desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+	
+	
+	<sql id="getSellersCondition">
+		<where>
+			<if test="queryMap.q_name != null and queryMap.q_name != ''">
+				and name like CONCAT('%',#{queryMap.q_name},'%')
+			</if>
+			<if test="queryMap.q_auditStatus != null and queryMap.q_auditStatus != ''">
+				and audit_status = #{queryMap.q_auditStatus}
+			</if>
+			<if test="queryMap.q_sellerName != null and queryMap.q_sellerName != ''">
+				and seller_name=#{queryMap.q_sellerName}
+			</if>
+			<if test="queryMap.q_isContributing != null">
+				and is_contributing = #{queryMap.q_isContributing}
+			</if>
+			<if test="queryMap.q_subjectId != null and queryMap.q_subjectId != 0">
+				and subject_id = #{queryMap.q_subjectId}
+			</if>
+			
+		</where>
+	</sql>
+	
+	
+	
+	<select id="getSellersByRole"  resultMap="SellerResult">
+		select * from `seller`  s
+		<include refid="conditions" />
+		<if test="list!=null and list.size()>0">
+			and s.id in
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+				#{item.sellerId}
+			</foreach>
+		</if>
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	<select id="getSellersCountByRole" resultType="java.lang.Integer">
+		select count(1) from `seller`  s
+		<include refid="conditions" />
+		<if test="list!=null and list.size()>0">
+			and s.id in
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+				#{item.sellerId}
+			</foreach>
+		</if>
+	</select>
+	
+	<!--Begin 自定义查询条件-->
+	<sql id="selectMyOption">
+			<if test="queryMap.q_sellerName != null and queryMap.q_sellerName != ''">
+				and seller_name like CONCAT('%',#{queryMap.q_sellerName},'%')
+			</if>
+			<if test="queryMap.q_businessState != null and queryMap.q_businessState != ''">
+				and business_state=#{queryMap.q_businessState}
+			</if>
+	</sql>
+	<!--end -->
+	
+    <sql id="conditions">
+		where 1=1
+		<if test="queryMap.q_name != null and queryMap.q_name !=''" > and s.`name`= #{queryMap.q_name}</if>
+		<if test="queryMap.q_sellerName != null and queryMap.q_sellerName !=''"  > 
+		    and s.`seller_name`= #{queryMap.q_sellerName}
+		</if>
+		<if test="queryMap.q_auditStatus != null and queryMap.q_auditStatus !=''"  > and s.`audit_status`= #{queryMap.q_auditStatus}</if>
+		
+	</sql>
+	
+	<select id="getSubjectNameBySellerId" resultType="java.lang.String" parameterType="Integer">
+		SELECT SELLER_NAME FROM seller s 
+		WHERE s.id = (SELECT subject_id FROM seller WHERE id = #{sellerId})
+	</select>
+
+</mapper>

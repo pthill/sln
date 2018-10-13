@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.portal.ShopActiveReadDao">
+    <resultMap id="ShopActiveResult" type="com.sln.entity.portal.ShopActive">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="img" column="img" />
+        <result property="type" column="type" />
+        <result property="state" column="state" />
+        <result property="status" column="status" />
+        <result property="url" column="url"/>
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <select id="get" parameterType="Integer" resultMap="ShopActiveResult">
+        select
+        *
+        from `shop_active`
+        where `id` = #{id}
+    </select>
+    <select id="getPage"  resultMap="ShopActiveResult">
+        SELECT a.*  from shop_active a
+        <include refid="getCondition"/>
+        order by a.id desc
+        <if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+
+    <select id="getPageCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1)
+        from `shop_active` a
+        <include refid="getCondition"/>
+    </select>
+
+    <sql id="getCondition">
+        <where>
+            <if test="queryMap.q_type != null and queryMap.q_type !=''">
+                and a.type =#{queryMap.q_type}
+            </if>
+            <if test="queryMap.q_shopName != null and queryMap.q_shopName !=''">
+                and a.name like CONCAT('%',#{queryMap.q_shopName},'%')
+            </if>
+            <if test="queryMap.q_activeName != null and queryMap.q_activeName !=''">
+                and a.name like CONCAT('%',#{queryMap.q_activeName},'%')
+            </if>
+            <if test="queryMap.q_shopState != null and queryMap.q_shopState !=''">
+                and a.state = #{queryMap.q_shopState}
+            </if>
+            <if test="queryMap.q_activeState != null and queryMap.q_activeState !=''">
+                and a.state = #{queryMap.q_activeState}
+            </if>
+            <if test="queryMap.q_status != null and queryMap.q_status !=''">
+                and a.status = #{queryMap.q_status}
+            </if>
+        </where>
+    </sql>
+
+    <select id="isNameExist"  resultType="java.lang.Integer">
+        select count(1)
+        from `shop_active`
+        where `name` = #{name}
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.seller.SellerUserReadDao">
+	<resultMap id="SellerUserResult" type="com.sln.entity.seller.SellerUser">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="password" column="password" />
+			<result property="code" column="code" />
+			<result property="realName" column="real_name" />
+			<result property="phone" column="phone" />
+			<result property="job" column="job" />
+			<result property="sellerId" column="seller_id" />
+			<result property="roleId" column="role_id" />
+			<result property="state" column="state" />
+			<result property="createId" column="create_id" />
+			<result property="createTime" column="create_time" />
+			<result property="updateId" column="update_id" />
+			<result property="updateTime" column="update_time" />
+			<result property="supplierId" column="supplier_id" />
+			<result property="supplierName" column="supplier_name" />
+		    <result property="roleName" column="roleName" />
+	</resultMap>
+	
+	<select id="get" parameterType="Integer" resultMap="SellerUserResult">
+		select
+		s.id,
+		s.`code`,
+		s.create_id,
+		s.create_time,
+		s.job,
+		s.`password`,
+		s.phone,
+		s.real_name,
+		s.`name`,
+		s.role_id,
+		s.state,
+		s.seller_id,
+		s.supplier_id,
+		s.supplier_name,
+		s.update_id,
+		s.update_time,
+		r.roles_name as roleName
+		FROM
+		seller_user s
+		LEFT JOIN seller_roles r ON r.id = s.role_id
+		where s.`id` = #{id}
+	</select>
+	
+	<select id="getByName" parameterType="java.lang.String" resultMap="SellerUserResult">
+		select * 
+		from `seller_user`
+		where `name` = #{name}
+	</select>
+	
+	<select id="getByNamePwd" parameterType="java.lang.String" resultMap="SellerUserResult">
+		select * 
+		from `seller_user`
+		where `name` = #{name} and password = #{password}
+		and `state`=1
+		limit 1
+	</select>
+	
+	<select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) from `seller_user` s
+		<include refid="whereConditions" />
+	</select>
+	
+	<select id="page"  parameterType="java.util.Map" resultType="com.sln.entity.seller.SellerUser">
+		SELECT
+		s.id,
+		s.`code`,
+		s.create_id,
+		s.create_time,
+		s.job,
+		s.`password`,
+		s.phone,
+		s.real_name,
+		s.`name`,
+		s.role_id,
+		s.state,
+		s.seller_id,
+		s.supplier_id,
+		s.supplier_name,
+		s.update_id,
+		s.update_time,
+		r.roles_name as roleName
+		FROM
+		seller_user s
+		LEFT JOIN seller_roles r ON r.id = s.role_id
+		<include refid="whereConditions" />
+		order by id desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+
+	
+	<!-- 查询条件 -->
+	<sql id="whereConditions">
+		WHERE s.seller_id = #{queryMap.sellerId}
+		<if test="queryMap.q_name != null and queryMap.q_name !=''"  > and s.`name` like CONCAT('%',#{queryMap.q_name},'%')</if>
+		<if test="queryMap.q_state != null and queryMap.q_state !=''"  > and `state`= #{queryMap.q_state}</if>
+	</sql>
+</mapper>

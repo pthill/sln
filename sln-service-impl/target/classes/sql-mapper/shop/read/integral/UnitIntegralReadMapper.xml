@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.integral.UnitIntegralReadDao">
+	
+	<select id="getIntegralStatistics" resultType="java.util.HashMap">
+SELECT
+	e.company,
+	e.dept,
+	CASE
+WHEN (sum(e.pf)) IS NULL THEN
+	0
+ELSE
+	sum(e.pf)
+END pfsumintegral,
+ CASE
+WHEN (sum(e.sumvalue)) IS NULL THEN
+	0
+ELSE
+	sum(e.sumvalue)
+END sumvalue,
+ CASE
+WHEN (sum(e.tk)) IS NULL THEN
+	0
+ELSE
+	sum(e.tk)
+END tkintegral,
+ CASE
+WHEN (sum(e.xf)) IS NULL THEN
+	0
+ELSE
+	sum(e.xf)
+END xfintegral
+FROM
+	(
+		SELECT
+			a.company,
+			a.dept,
+			a.tel,
+			b.tk,
+			b.xf,
+			c.sumvalue,
+			d.pf
+		FROM
+			(
+				SELECT
+					a.tel,
+					t_mws.company,
+					t_mws.dept
+				FROM
+					(
+						SELECT
+							t.tel,
+							max(t.welfare_id) welfare_id
+						FROM
+							member_welfare_send_detail t
+						GROUP BY
+							t.tel
+					) a
+				LEFT JOIN member_welfare_send t_mws ON a.welfare_id = t_mws.id
+			) a
+		LEFT JOIN (
+			SELECT
+				a.member_id,
+				a.mobile,
+				SUM(a.aaaa) xf,
+				SUM(a.bbbb) tk
+			FROM
+				(
+					SELECT
+						t_mgil.member_id,
+						t_m.mobile,
+						CASE
+					WHEN t_mgil.opt_type = 7 THEN
+						t_mgil.
+					VALUE
+
+					ELSE
+						0
+					END AS aaaa,
+					CASE
+				WHEN t_mgil.opt_type = 11
+				OR t_mgil.opt_type = 8 THEN
+					t_mgil.
+				VALUE
+
+				ELSE
+					0
+				END AS bbbb
+				FROM
+					member_grade_integral_logs t_mgil
+				LEFT JOIN member t_m ON t_mgil.member_id = t_m.id
+				WHERE
+					(
+						t_mgil.opt_type = 7
+						OR t_mgil.opt_type = 11
+						OR t_mgil.opt_type = 8
+					)
+					<if test="queryMap.q_starTime != null and queryMap.q_starTime !=''">
+					and t_mgil.create_time <![CDATA[  >=  ]]>#{queryMap.q_starTime} 
+					</if>
+					<if test="queryMap.q_endTime != null and queryMap.q_endTime !=''">
+					and t_mgil.create_time <![CDATA[ <= ]]> #{queryMap.q_endTime}  
+					</if>
+				) a
+			GROUP BY
+				a.member_id,
+				a.mobile
+		) b ON a.tel = b.mobile
+		LEFT JOIN (
+			SELECT
+				(a.sumvalue + t_m.integral) sumvalue,
+				a.member_id,
+				t_m.mobile
+			FROM
+				member t_m
+			LEFT JOIN (
+				SELECT
+					t_msi.member_id,
+					SUM(t_msi.`value`) sumvalue
+				FROM
+					member_special_integral t_msi
+				GROUP BY
+					t_msi.member_id
+			) a ON t_m.id = a.member_id
+		) c ON a.tel = c.mobile
+		LEFT JOIN (
+			SELECT
+				t_mwsd.tel,
+				sum(t_mwsd.money) AS pf
+			FROM
+				member_welfare_send_detail t_mwsd
+			LEFT JOIN member_welfare_send t_mws ON t_mwsd.welfare_id = t_mws.id
+			WHERE
+				t_mws.send_status = 1
+				<if test="queryMap.q_starTime != null and queryMap.q_starTime !=''">
+					and t_mws.send_time <![CDATA[  >=  ]]>#{queryMap.q_starTime}  
+				</if>
+				<if test="queryMap.q_endTime != null and queryMap.q_endTime != ''">
+					and t_mws.send_time  <![CDATA[ <= ]]> #{queryMap.q_endTime} 
+				</if>
+			GROUP BY
+				t_mwsd.tel
+		) d ON a.tel = d.tel
+	) e
+	where 1 = 1
+	<if test="queryMap.q_company != null and queryMap.q_company != ''">
+		and e.company=#{queryMap.q_company}
+	</if>
+	<if test="queryMap.q_dept != null and queryMap.q_dept != ''">
+		and e.dept=#{queryMap.q_dept}
+	</if>
+	GROUP BY
+	e.company,
+	e.dept
+	<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>
+    
+    <select id="getIntegralStatisticsCount" resultType="java.lang.Integer">
+    select count(1) from (
+   SELECT
+	e.company,
+	e.dept,
+	CASE
+WHEN (sum(e.pf)) IS NULL THEN
+	0
+ELSE
+	sum(e.pf)
+END pfsumintegral,
+ CASE
+WHEN (sum(e.sumvalue)) IS NULL THEN
+	0
+ELSE
+	sum(e.sumvalue)
+END sumvalue,
+ CASE
+WHEN (sum(e.tk)) IS NULL THEN
+	0
+ELSE
+	sum(e.tk)
+END tkintegral,
+ CASE
+WHEN (sum(e.xf)) IS NULL THEN
+	0
+ELSE
+	sum(e.xf)
+END xfintegral
+FROM
+	(
+		SELECT
+			a.company,
+			a.dept,
+			a.tel,
+			b.tk,
+			b.xf,
+			c.sumvalue,
+			d.pf
+		FROM
+			(
+				SELECT
+					a.tel,
+					t_mws.company,
+					t_mws.dept
+				FROM
+					(
+						SELECT
+							t.tel,
+							max(t.welfare_id) welfare_id
+						FROM
+							member_welfare_send_detail t
+						GROUP BY
+							t.tel
+					) a
+				LEFT JOIN member_welfare_send t_mws ON a.welfare_id = t_mws.id
+			) a
+		LEFT JOIN (
+			SELECT
+				a.member_id,
+				a.mobile,
+				SUM(a.aaaa) xf,
+				SUM(a.bbbb) tk
+			FROM
+				(
+					SELECT
+						t_mgil.member_id,
+						t_m.mobile,
+						CASE
+					WHEN t_mgil.opt_type = 7 THEN
+						t_mgil.
+					VALUE
+
+					ELSE
+						0
+					END AS aaaa,
+					CASE
+				WHEN t_mgil.opt_type = 11
+				OR t_mgil.opt_type = 8 THEN
+					t_mgil.
+				VALUE
+
+				ELSE
+					0
+				END AS bbbb
+				FROM
+					member_grade_integral_logs t_mgil
+				LEFT JOIN member t_m ON t_mgil.member_id = t_m.id
+				WHERE
+					(
+						t_mgil.opt_type = 7
+						OR t_mgil.opt_type = 11
+						OR t_mgil.opt_type = 8
+					)
+					<if test="queryMap.q_starTime != null and queryMap.q_starTime !=''">
+					and t_mgil.create_time <![CDATA[  >=  ]]>#{queryMap.q_starTime} 
+					</if>
+					<if test="queryMap.q_endTime != null and queryMap.q_endTime !=''">
+					and t_mgil.create_time <![CDATA[ <= ]]> #{queryMap.q_endTime}  
+					</if>
+				) a
+			GROUP BY
+				a.member_id,
+				a.mobile
+		) b ON a.tel = b.mobile
+		LEFT JOIN (
+			SELECT
+				(a.sumvalue + t_m.integral) sumvalue,
+				a.member_id,
+				t_m.mobile
+			FROM
+				member t_m
+			LEFT JOIN (
+				SELECT
+					t_msi.member_id,
+					SUM(t_msi.`value`) sumvalue
+				FROM
+					member_special_integral t_msi
+				GROUP BY
+					t_msi.member_id
+			) a ON t_m.id = a.member_id
+		) c ON a.tel = c.mobile
+		LEFT JOIN (
+			SELECT
+				t_mwsd.tel,
+				sum(t_mwsd.money) AS pf
+			FROM
+				member_welfare_send_detail t_mwsd
+			LEFT JOIN member_welfare_send t_mws ON t_mwsd.welfare_id = t_mws.id
+			WHERE
+				t_mws.send_status = 1
+				<if test="queryMap.q_starTime != null and queryMap.q_starTime !=''">
+					and t_mws.send_time <![CDATA[  >=  ]]>#{queryMap.q_starTime}  
+				</if>
+				<if test="queryMap.q_endTime != null and queryMap.q_endTime != ''">
+					and t_mws.send_time  <![CDATA[ <= ]]> #{queryMap.q_endTime} 
+				</if>
+			GROUP BY
+				t_mwsd.tel
+		) d ON a.tel = d.tel
+	) e
+	where 1 = 1
+	<if test="queryMap.q_company != null and queryMap.q_company != ''">
+		and e.company=#{queryMap.q_company}
+	</if>
+	<if test="queryMap.q_dept != null and queryMap.q_dept != ''">
+		and e.dept=#{queryMap.q_dept}
+	</if>
+	GROUP BY
+	e.company,
+	e.dept) f
+    </select>
+    
+    <!-- 查询积分消费明细 -->
+    <select id="getIntegralDetail" resultType="java.util.HashMap">
+		select t_m.name,t_m.mobile,t_mdil.ref_code,t_mdil.value,t_mdil.create_time from `member_grade_integral_logs` t_mdil
+		left join member t_m on t_mdil.member_id = t_m.id
+		left join (
+						SELECT
+							a.tel,
+							t_mws.company,
+							t_mws.dept
+						FROM
+							(
+								SELECT
+									t.tel,
+									max(t.welfare_id) welfare_id
+								FROM
+									member_welfare_send_detail t
+								GROUP BY
+									t.tel
+							) a
+						LEFT JOIN member_welfare_send t_mws ON a.welfare_id = t_mws.id
+					) b on t_m.mobile = b.tel
+		where 
+		 t_mdil.opt_type =7 
+		<if test="queryMap.q_company != null and queryMap.q_company != ''">
+			and b.company =#{queryMap.q_company}
+		</if>
+		<if test="queryMap.q_dept != null and queryMap.q_dept != ''">
+			and b.dept=#{queryMap.q_dept}
+		</if>
+		<if test="queryMap.q_starTime != null and queryMap.q_starTime !=''">
+			and t_mdil.create_time <![CDATA[  >=  ]]>#{queryMap.q_starTime} 
+		</if>
+		<if test="queryMap.q_endTime != null and queryMap.q_endTime != ''">
+			and t_mdil.create_time<![CDATA[ <= ]]>#{queryMap.q_endTime}
+		</if>
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+    </select>
+    
+    <select id="getIntegralDetailCount" resultType="java.lang.Integer">
+		select count(1) from `member_grade_integral_logs` t_mdil
+		left join member t_m on t_mdil.member_id = t_m.id
+		left join (
+						SELECT
+							a.tel,
+							t_mws.company,
+							t_mws.dept
+						FROM
+							(
+								SELECT
+									t.tel,
+									max(t.welfare_id) welfare_id
+								FROM
+									member_welfare_send_detail t
+								GROUP BY
+									t.tel
+							) a
+						LEFT JOIN member_welfare_send t_mws ON a.welfare_id = t_mws.id
+					) b on t_m.mobile = b.tel
+		where 
+		 t_mdil.opt_type =7 
+		<if test="queryMap.q_company != null and queryMap.q_company != ''">
+			and b.company =#{queryMap.q_company}
+		</if>
+		<if test="queryMap.q_dept != null and queryMap.q_dept != ''">
+			and b.dept=#{queryMap.q_dept}
+		</if>
+		<if test="queryMap.q_starTime != null and queryMap.q_starTime !=''">
+			and t_mdil.create_time <![CDATA[  >=  ]]>#{queryMap.q_starTime} 
+		</if>
+		<if test="queryMap.q_endTime != null and queryMap.q_endTime != ''">
+			and t_mdil.create_time<![CDATA[ <= ]]>#{queryMap.q_endTime}
+		</if>
+    </select>
+</mapper>

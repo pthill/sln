@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.read.supplier.OrderDeliveryReadDao">
+	<resultMap id="OrderDeliveryResult" type="com.sln.entity.supplier.OrderDelivery">
+			<result property="id" column="id" />
+			<result property="orderSn" column="order_sn" />
+			<result property="deliverySn" column="delivery_sn" />
+			<result property="createTime" column="create_time" />
+			<result property="orderTime" column="order_time" />
+			<result property="supplierId" column="supplier_id" />
+			<result property="sellerId" column="seller_id" />
+			<result property="memberName" column="member_name" />
+			<result property="memberPhone" column="member_phone" />
+			<result property="state" column="state" />
+			<result property="receivingAddress" column="receiving_address" />
+			<result property="updateTime" column="update_time" />
+			<result property="logistics" column="logistics" />
+			<result property="invoiceStatus" column="invoice_status" />
+			<result property="invoiceTitle" column="invoice_title" />
+			<result property="logisticsName" column="logistics_name" />
+			<result property="waybillNumber" column="waybill_number" />
+			<result property="supplierName" column="supplier_name" />
+	</resultMap>
+	<sql id="whereConditions">
+		where 1 = 1
+			<if test="queryMap.sellerId != null and queryMap.sellerId != ''">
+				and t.seller_id = #{queryMap.q_sellerId}
+			</if>
+			<if test="queryMap.q_orderSn != null and queryMap.q_orderSn != ''">
+				and t.order_sn = #{queryMap.q_orderSn}
+			</if>
+			<if test="queryMap.q_deliverySn != null and queryMap.q_deliverySn != ''">
+				and t.delivery_sn = #{queryMap.q_deliverySn}
+			</if>
+			<if test="queryMap.q_memberName != null and queryMap.q_memberName != ''">
+			</if>
+			<if test="queryMap.q_state != null and queryMap.q_state !=0">
+				and t.state =#{queryMap.q_state}
+			</if>
+			<if test="queryMap.q_supplierId != null and queryMap.q_supplierId !=0">
+				and t.supplier_id = #{queryMap.q_supplierId}
+			</if>
+	</sql>
+	<select id="getPage" resultMap="OrderDeliveryResult">
+		select t.id,t.order_sn,t.delivery_sn,t.create_time,t.order_time,t.supplier_id,t.seller_id,t.member_name,
+			t.member_phone,t.state,t.receiving_address,t.update_time,t.invoice_status,t.invoice_title,t.logistics_name
+			,t.waybill_number,t.logistics,t_s.name supplier_name
+			 from order_delivery t left join supplier t_s on t.supplier_id = t_s.id
+			 <include refid="whereConditions"/>
+			 order by t.create_time desc
+		<if test="size != null and size &gt; 0">limit #{start},#{size}</if>
+	</select>	
+	<select id="getPageCount" resultType="java.lang.Integer">
+		select count(0)
+			 from order_delivery t
+			 <include refid="whereConditions"/>
+	</select>
+	
+	
+</mapper>

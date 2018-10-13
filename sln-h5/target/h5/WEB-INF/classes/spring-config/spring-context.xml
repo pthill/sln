@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:properties-config/jdbc.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <context:component-scan base-package="com.sln.service,com.sln.model,com.sln.util">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <import resource="classpath:config/spring-datasources-shop.xml"/>
+    <import resource="classpath:config/spring-datasources-analysis.xml"/>
+    
+    <!-- 实例化redis客户端 -->
+    <import resource="spring-redis.xml"/>
+
+    <bean id="domainUrlUtil" class="com.sln.core.freemarkerutil.DomainUrlUtil">
+        <property name="SLN_URL_RESOURCES" value="${sln.url.resources}"/>
+        <property name="SLN_FRONT_URL" value="${sln.front.url}"/>
+        <property name="SLN_STATIC_RESOURCES" value="${sln.static.resources}"/>
+        <property name="SLN_IMAGE_RESOURCES" value="${sln.image.resources}"/>
+        <property name="SLN_COOKIE_DOMAIN" value="${sln.cookie.domain}"/>
+        <property name="SLN_COOKIE_NAME" value="${sln.cookie.name}"/>
+        <property name="SLN_SOLR_URL" value="${search.solr.url}"/>
+        <property name="SLN_SOLR_SERVER" value="${search.solr.server}"/>
+        <property name="ECARDPAY_CREATEORDER_URL" value="${ecardpay.createorder.url}"/>
+        <property name="ECARDPAY_ORDERQUERY_URL" value="${ecardpay.orderquery.url}"/>
+        <property name="ECARDPAY_REFORDERMONEY_URL" value="${ecardpay.refordermoney.url}"/>
+        <property name="ECARDPAY_PC_RETURN_URL" value="${ecardpay.pc.return.url}"/>
+        <property name="ECARDPAY_PHONE_RETURN_URL" value="${ecardpay.phone.return.url}"/>
+        <property name="ALIDAYU_SMS_URL" value="${alidayu.sms.url}"/>
+        <property name="REDIS_APP" value="${redis.app}"/>
+        <property name="REDIS_URL" value="${redis.url}"/>
+        <property name="REDIS_PORT" value="${redis.port}"/>
+        <property name="REDIS_TIMEOUT" value="${redis.timeout}"/>
+        <property name="REDIS_REQUIREPASS" value="${redis.requirepass}"/>
+    </bean>
+
+</beans>

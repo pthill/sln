@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.jd.JdCommoditypoolWriteDao">
+	<resultMap id="JdCommoditypoolResult" type="com.sln.entity.jd.JdCommoditypool">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="pageNum" column="page_num" />
+	</resultMap>
+	
+	<select id="getJdCommoditypool" resultMap="JdCommoditypoolResult">
+		
+	</select>
+	
+	<insert id="batchInsert" parameterType="java.util.List">
+		insert into 
+		`jd_commoditypool`
+		(
+			
+			`name`,
+			`page_num`
+		)
+		values
+		<foreach collection="list" index="index" item="item" separator=",">
+				(
+				#{item.name},
+				#{item.page_num}
+				)
+       </foreach> 
+	</insert>
+	
+	<!-- 批量插入SKU state 状态为 1 则是新增加、2为已导入详情、3为已导入价格、4为已导入上下架状态  -->
+	<insert id="batchInsertSku" parameterType="java.util.ArrayList">
+		insert into jd_temporaryskuid(skuId,state) values
+		<foreach collection="array" index="index" item="item"  separator=",">
+				(#{item},1)
+       </foreach> 
+	</insert>
+	
+	<!-- 批量修改临时表状态 -->
+    <update id="updateStateBySku">
+    	update jd_temporaryskuid set state =#{state} where skuId in(
+    	<foreach collection="list" index="index" item="item" separator=",">
+      		#{item}
+       </foreach> 
+    		)
+    </update>
+    
+    <!-- 对零时SKU表进行去重处理 -->
+    <delete id="duplicateRemoval">
+    	delete FROM `jd_temporaryskuid` WHERE `skuId` in (select a.skuId from (SELECT skuId
+			FROM `jd_temporaryskuid` 
+			GROUP BY `skuId` 
+			HAVING COUNT( * ) >1) a)  and id not in (select b.id from (select min(id) id from jd_temporaryskuid group by skuId having count(* )>1)b)
+    </delete>
+</mapper>

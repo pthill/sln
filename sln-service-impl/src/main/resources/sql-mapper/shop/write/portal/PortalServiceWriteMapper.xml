@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sln.dao.shop.write.portal.PortalServiceWriteDao">
+	<resultMap id="PortalServiceResult" type="com.sln.entity.portal.PortalService">
+		<result property="id" column="id" />
+		<result property="serviceName" column="service_name" />
+		<result property="order" column="order" />
+		<result property="abbreviation" column="abbreviation" />
+		<result property="code" column="code" />
+		<result property="type" column="type" />
+		<result property="pid" column="pid" />
+		<result property="menuId" column="menu_id" />
+		<result property="state" column="state" />
+		<result property="isShow" column="is_show" />
+		<result property="img" column="img" />
+		<result property="highLight" column="high_light" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="url" column="url" />
+	</resultMap>
+
+	<update id="update" parameterType="com.sln.entity.portal.PortalService">
+		update `portal_service`
+		<set>
+			<if test="serviceName != null">`service_name`= #{serviceName},</if>
+			<if test="order != null">`order`= #{order},</if>
+			<if test="abbreviation != null">`abbreviation`= #{abbreviation},</if>
+			<if test="code != null">`code`= #{code},</if>
+			<if test="type != null">`type`= #{type},</if>
+			<if test="pid != null">`pid`= #{pid},</if>
+			<if test="menuId != null">`menu_id`= #{menuId},</if>
+			<if test="state != null">`state`= #{state},</if>
+			<if test="isShow != null">`is_show`= #{isShow},</if>
+			<if test="img != null">`img`= #{img},</if>
+			<if test="highLight != null">`high_light`= #{highLight},</if>
+			<if test="url != null">`url`= #{url},</if>
+			`update_time`= now()
+		</set>
+		where `id` = #{id}
+	</update>
+
+	<insert id="insert" parameterType="com.sln.entity.portal.PortalService" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into
+		`portal_service`
+		(
+
+		`service_name`,
+		`order`,
+		`abbreviation`,
+		`code`,
+		`type`,
+		`pid`,
+		`menu_id`,
+		`state`,
+		`is_show`,
+		`img`,
+		`high_light`,
+		`create_time`,
+		`update_time`,
+		`url`
+		)
+		values
+		(
+
+		#{serviceName},
+		#{order},
+		#{abbreviation},
+		#{code},
+		#{type},
+		#{pid},
+		#{menuId},
+		#{state},
+		#{isShow},
+		#{img},
+		#{highLight},
+		now(),
+		now(),
+		#{url}
+		)
+	</insert>
+
+	<delete id="del">
+		DELETE FROM `portal_service` where id=#{id}
+	</delete>
+
+</mapper>
